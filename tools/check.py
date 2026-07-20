@@ -82,6 +82,22 @@ def validate() -> list[str]:
     if badge is None or badge.group(1) != version:
         errors.append("README 版本徽章与 VERSION 不一致")
 
+    tc_skill = (ROOT / "skills" / "tc" / "SKILL.md").read_text(encoding="utf-8")
+    tc_lite = (ROOT / "skills" / "tc" / "assets" / "tc-lite.txt").read_text(
+        encoding="utf-8"
+    )
+    short_entry = (
+        "在。把事情直接发过来，乱一点也没关系。"
+        "我先帮你把问题重新说清楚。"
+    )
+    for label, content in (("TC 主 Skill", tc_skill), ("TC 轻量版", tc_lite)):
+        if short_entry not in content:
+            errors.append(f"{label} 缺少统一的极短入口文案")
+        if "问题定义（草案）" not in content or "我只确认一个点" not in content:
+            errors.append(f"{label} 缺少渐进式问题定义输出")
+    if "已进入 TC。" in tc_skill or "已进入 TC。" in tc_lite:
+        errors.append("TC 仍包含旧版长入口文案")
+
     markdown_files = [
         *ROOT.glob("*.md"),
         *(ROOT / "docs").glob("**/*.md"),

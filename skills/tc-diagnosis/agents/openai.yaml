@@ -1,4 +1,4 @@
 interface:
-  display_name: "TC Diagnosis｜问题消解"
-  short_description: "找到赚钱链条最早断掉的一环"
-  default_prompt: "使用 $tc-diagnosis 把我的创业叙述拆成事实、假设和唯一业务卡点。"
+  display_name: "TC Diagnosis｜问题重构与定义"
+  short_description: "把混乱叙述变成可验证的真问题"
+  default_prompt: "使用 $tc-diagnosis 重构我的创业叙述，并定义当前唯一需要解决的问题。"

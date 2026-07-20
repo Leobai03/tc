@@ -4,16 +4,16 @@
     "name": "Leobai03"
   },
   "metadata": {
-    "description": "TC 天策创业解题系统：先找到真正的问题，再给出解决办法",
-    "version": "1.2.0"
+    "description": "TC 天策创业解题系统：先重构和定义问题，再给出明确方案",
+    "version": "1.3.0"
   },
   "plugins": [
     {
       "name": "tc",
-      "description": "TC 主入口。找到用户真正想问和真正需要的问题，再给出判断、取舍与行动。",
+      "description": "TC 渐进式主入口。先重构和定义问题，确认后再给出判断、取舍与行动。",
       "source": "./",
       "strict": false,
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "business-workflow",
       "keywords": [
         "startup",
@@ -27,10 +27,10 @@
     },
     {
       "name": "tc-diagnosis",
-      "description": "把情绪和模糊叙述拆开，找到赚钱链条最早断掉的一环。",
+      "description": "把混乱叙述重构成有目标、约束和验证标准的真问题。",
       "source": "./",
       "strict": false,
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "business-diagnostics",
       "keywords": [
         "diagnosis",
@@ -47,7 +47,7 @@
       "description": "判断当前是否该写文案，并生成能推动下一业务环节的表达。",
       "source": "./",
       "strict": false,
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "content-creation",
       "keywords": [
         "copywriting",
@@ -64,7 +64,7 @@
       "description": "把判断变成十分钟、二十四小时和七天内可验证的真实市场动作。",
       "source": "./",
       "strict": false,
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "business-execution",
       "keywords": [
         "execution",
@@ -81,7 +81,7 @@
       "description": "只更新官方 TC Skill，不修改其他 Skill 或用户资料。",
       "source": "./",
       "strict": false,
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "workflow-infrastructure",
       "keywords": [
         "update",
