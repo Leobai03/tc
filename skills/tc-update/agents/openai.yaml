@@ -1,0 +1,4 @@
+interface:
+  display_name: "TC Update｜更新 TC"
+  short_description: "只同步官方 TC 系列 Skill"
+  default_prompt: "使用 $tc-update 把 TC 更新到官方最新版本。"

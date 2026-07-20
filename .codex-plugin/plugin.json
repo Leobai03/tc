@@ -1,0 +1,39 @@
+{
+  "name": "tc",
+  "version": "1.0.0",
+  "description": "引导用户找到真正想问、真正需要解决的问题，再给出判断、取舍与可验证的解决办法。",
+  "author": {
+    "name": "天策",
+    "email": "1179884054@qq.com",
+    "url": "https://leobai825.icu"
+  },
+  "homepage": "https://leobai825.icu/tc.html",
+  "repository": "https://github.com/Leobai03/tc",
+  "license": "Apache-2.0",
+  "keywords": [
+    "startup",
+    "business",
+    "copywriting",
+    "execution",
+    "chinese"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "TC｜天策创业解题系统",
+    "shortDescription": "先问对问题，再给出解决办法",
+    "longDescription": "面向创业者和内容创作者的中文解题工具。先用天策的价值观和逻辑，把表面问题还原为用户真正想问、真正需要解决的问题，再给出明确判断、必要取舍与可验证行动；需要时继续生成商业文案。",
+    "developerName": "天策",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://leobai825.icu/tc.html",
+    "defaultPrompt": [
+      "/tc 我现在不知道创业下一步该做什么",
+      "/tc-diagnosis 帮我找出业务最早卡住的一环",
+      "/tc-action 把这个想法变成七天验证动作"
+    ],
+    "brandColor": "#45C2FF"
+  }
+}

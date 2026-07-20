@@ -1,0 +1,38 @@
+name: TC Integrity Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validate TC repository
+        run: python3 tools/check.py
+
+      - name: Validate Claude plugin marketplace
+        run: |
+          npm install --global @anthropic-ai/claude-code@2.1.158
+          claude plugin validate .
+
+      - name: Build release artifacts
+        run: |
+          python3 tools/build.py
+          test -f "dist/tc-suite-$(tr -d '[:space:]' < VERSION).zip"
+          test "$(find dist/skills -name '*.zip' | wc -l | tr -d ' ')" = "$(find skills -name SKILL.md | wc -l | tr -d ' ')"

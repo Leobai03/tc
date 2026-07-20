@@ -1,0 +1,4 @@
+interface:
+  display_name: "TC Action｜行动推进"
+  short_description: "把判断变成七天内可验证的市场动作"
+  default_prompt: "使用 $tc-action 把我现在的想法变成十分钟、二十四小时和七天行动。"

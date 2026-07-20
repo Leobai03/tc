@@ -1,0 +1,4 @@
+interface:
+  display_name: "TC Diagnosis｜问题消解"
+  short_description: "找到赚钱链条最早断掉的一环"
+  default_prompt: "使用 $tc-diagnosis 把我的创业叙述拆成事实、假设和唯一业务卡点。"
