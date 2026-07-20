@@ -24,6 +24,12 @@ description: TC 天策创业解题 Skill，兼容 dontbesilent 的 DBS 商业工
 
 用户的表面问题与真实需要一致时直接回答，不要故意把简单问题复杂化。二者不一致时，先用小学生也能听懂的话指出区别。存在关键歧义时，一次只问最能改变答案的一个问题，同时给出当前推荐理解。
 
+## 事实与知识源
+
+用户提供了飞书、Notion、网盘、代码仓库、本地目录或历史内容时，读取 [knowledge-routing.md](references/knowledge-routing.md)。先判断用户问的是现在、过去还是方法，再选择最小必要资料；不要把整座知识库一次塞进上下文。
+
+工作区存在 `knowledge/SOURCE_OF_TRUTH.md`、`SOURCE_OF_TRUTH.md` 或项目级 `AGENTS.md` 时，优先按其中的真源顺序取证。历史内容只能证明当时说过什么，不自动代表今天仍然有效；私信、联系人、账号安全数据和商业机密默认不读、不上传、不公开。
+
 ## 执行使命
 
 问题被说清以后，按需要完成三件事：
@@ -224,6 +230,10 @@ TC 是统一入口，同时发布四个边界清楚的子 Skill：
 ### 跨平台安装与分享
 
 读取 [distribution.md](references/distribution.md)。优先给用户一个链接或一段可直接复制的文字，不先讲技术名词。需要在普通聊天 AI 中使用时，提供 `assets/tc-lite.txt`。
+
+### 用户知识库与历史资料
+
+读取 [knowledge-routing.md](references/knowledge-routing.md)。先找真源导航，再按当前问题局部读取；资料用于补充事实，最后仍回到 TC 的判断、取舍和行动。
 
 ## 与 DBS 协同
 

@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "TC 天策创业解题系统：先找到真正的问题，再给出解决办法",
-    "version": "1.0.0"
+    "version": "1.1.0"
   },
   "plugins": [
     {
@@ -13,50 +13,85 @@
       "description": "TC 主入口。找到用户真正想问和真正需要的问题，再给出判断、取舍与行动。",
       "source": "./",
       "strict": false,
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "business-workflow",
-      "keywords": ["startup", "business", "router", "chinese"],
-      "skills": ["./skills/tc"]
+      "keywords": [
+        "startup",
+        "business",
+        "router",
+        "chinese"
+      ],
+      "skills": [
+        "./skills/tc"
+      ]
     },
     {
       "name": "tc-diagnosis",
       "description": "把情绪和模糊叙述拆开，找到赚钱链条最早断掉的一环。",
       "source": "./",
       "strict": false,
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "business-diagnostics",
-      "keywords": ["diagnosis", "business-model", "bottleneck", "chinese"],
-      "skills": ["./skills/tc-diagnosis"]
+      "keywords": [
+        "diagnosis",
+        "business-model",
+        "bottleneck",
+        "chinese"
+      ],
+      "skills": [
+        "./skills/tc-diagnosis"
+      ]
     },
     {
       "name": "tc-copy",
       "description": "判断当前是否该写文案，并生成能推动下一业务环节的表达。",
       "source": "./",
       "strict": false,
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "content-creation",
-      "keywords": ["copywriting", "content", "sales", "chinese"],
-      "skills": ["./skills/tc-copy"]
+      "keywords": [
+        "copywriting",
+        "content",
+        "sales",
+        "chinese"
+      ],
+      "skills": [
+        "./skills/tc-copy"
+      ]
     },
     {
       "name": "tc-action",
       "description": "把判断变成十分钟、二十四小时和七天内可验证的真实市场动作。",
       "source": "./",
       "strict": false,
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "business-execution",
-      "keywords": ["execution", "validation", "experiment", "chinese"],
-      "skills": ["./skills/tc-action"]
+      "keywords": [
+        "execution",
+        "validation",
+        "experiment",
+        "chinese"
+      ],
+      "skills": [
+        "./skills/tc-action"
+      ]
     },
     {
       "name": "tc-update",
       "description": "只更新官方 TC Skill，不修改其他 Skill 或用户资料。",
       "source": "./",
       "strict": false,
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "workflow-infrastructure",
-      "keywords": ["update", "upgrade", "maintenance", "chinese"],
-      "skills": ["./skills/tc-update"]
+      "keywords": [
+        "update",
+        "upgrade",
+        "maintenance",
+        "chinese"
+      ],
+      "skills": [
+        "./skills/tc-update"
+      ]
     }
   ]
 }

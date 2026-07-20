@@ -1,6 +1,6 @@
 # TC
 
-[![Version](https://img.shields.io/badge/version-1.0.0-45C2FF.svg?style=flat-square)](VERSION)
+[![Version](https://img.shields.io/badge/version-1.1.0-45C2FF.svg?style=flat-square)](VERSION)
 [![License](https://img.shields.io/badge/license-Apache--2.0-16A34A.svg?style=flat-square)](LICENSE)
 
 > 先帮你找到真正想问、真正需要解决的问题，再告诉你该怎么解决。
@@ -72,13 +72,24 @@ claude plugin install tc@tc-skills
 
 ## 知识库
 
-TC v1.0.0 内置 14 份按需读取的参考资料，核心是“问对问题，再解决问题”，并覆盖创业链条、内容到收入、X 增长、收入记分、案例复盘、七天内测、跨平台分发、反馈与公开边界等主题。
+TC 内置 15 份按需读取的参考资料，核心是“问对问题，再解决问题”，并覆盖创业链条、内容到收入、X 增长、收入记分、案例复盘、外部知识源路由、跨平台分发、反馈与公开边界等主题。
 
 - [知识库导航](知识库/README.md)
 - [来源与验证规则](知识库/来源与验证.md)
 - [案例录入模板](知识库/案例录入模板.md)
+- [外部知识源接入](知识库/外部知识源接入.md)
 
 知识库不把观点伪装成事实。动态平台规则、法律、投资、医疗、价格与业务数据必须在使用时重新核对。
+
+### 知识源怎么分工
+
+```text
+用户的飞书 / Notion / 当前状态页：今天仍然有效吗
+用户的内容与数据归档：过去真实发生过什么
+TC 内置知识包：现在应该怎样判断和行动
+```
+
+TC 只按当前问题读取最小必要资料，不会自动收集用户全部对话，也不会把私有知识库打包进公开仓库。
 
 ## 项目结构
 

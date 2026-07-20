@@ -20,6 +20,13 @@
 | 公开边界 | [`skills/tc/references/public-boundaries.md`](../skills/tc/references/public-boundaries.md) | 公开内容、商业宣传与隐私风险 |
 | DBS 协同 | [`skills/tc/references/dbs-integration.md`](../skills/tc/references/dbs-integration.md) | 环境中已安装 DBS 时 |
 | 草根创业方法 | [`skills/tc/references/grassroots-integration.md`](../skills/tc/references/grassroots-integration.md) | 调研、对标、试错、团队边界 |
+| 外部知识源路由 | [`skills/tc/references/knowledge-routing.md`](../skills/tc/references/knowledge-routing.md) | 用户提供飞书、本地目录、历史内容或真源导航时 |
+
+## 外部知识源
+
+TC 内置知识回答“怎么判断”，外部知识库回答“这个用户真实发生了什么”。接入方式见 [`外部知识源接入.md`](外部知识源接入.md)。
+
+公开仓库只保存方法和接口，不复制用户私有资料。天策当前使用飞书 V4 管理最新状态、本地 X 导出保存历史公开证据、TC GitHub 发布通用方法。
 
 ## 维护规则
 
@@ -29,6 +36,7 @@
 4. 案例进入公开仓库前必须脱敏，并说明事实、假设、动作和结果。
 5. 粉丝、营收、价格、平台政策、合作状态等动态信息不作为永久事实写入知识库。
 6. 无法核验的观点要标记为假设、经验或待验证，不包装成定律。
+7. 外部知识源按需读取；先读真源导航，再读能改变当前判断的最小片段。
 
 ## 下一阶段
 
