@@ -1,6 +1,6 @@
 # TC
 
-[![Version](https://img.shields.io/badge/version-1.1.0-45C2FF.svg?style=flat-square)](VERSION)
+[![Version](https://img.shields.io/badge/version-1.2.0-45C2FF.svg?style=flat-square)](VERSION)
 [![License](https://img.shields.io/badge/license-Apache--2.0-16A34A.svg?style=flat-square)](LICENSE)
 
 > 先帮你找到真正想问、真正需要解决的问题，再告诉你该怎么解决。
@@ -72,11 +72,12 @@ claude plugin install tc@tc-skills
 
 ## 知识库
 
-TC 内置 15 份按需读取的参考资料，核心是“问对问题，再解决问题”，并覆盖创业链条、内容到收入、X 增长、收入记分、案例复盘、外部知识源路由、跨平台分发、反馈与公开边界等主题。
+TC 内置 16 份按需读取的参考资料，核心是“问对问题，再解决问题”，并覆盖创业链条、内容到收入、X 增长、收入记分、案例复盘、外部知识源路由、实操资料提炼、跨平台分发、反馈与公开边界等主题。
 
 - [知识库导航](知识库/README.md)
 - [来源与验证规则](知识库/来源与验证.md)
 - [案例录入模板](知识库/案例录入模板.md)
+- [知识原子录入模板](知识库/知识原子录入模板.md)
 - [外部知识源接入](知识库/外部知识源接入.md)
 
 知识库不把观点伪装成事实。动态平台规则、法律、投资、医疗、价格与业务数据必须在使用时重新核对。
@@ -120,12 +121,12 @@ TC 使用 `主版本.次版本.修订号`：
 准备新版本：
 
 ```bash
-python3 tools/release.py prepare 1.1.0
+python3 tools/release.py prepare 1.2.0
 python3 tools/check.py
 python3 tools/build.py
 ```
 
-推送 `v1.1.0` 标签后，GitHub Actions 会校验版本、构建安装包并创建 GitHub Release。
+推送 `v1.2.0` 标签后，GitHub Actions 会校验版本、构建安装包并创建 GitHub Release。
 
 ## 与 DBS 的关系
 

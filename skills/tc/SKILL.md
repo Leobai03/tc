@@ -28,6 +28,8 @@ description: TC 天策创业解题 Skill，兼容 dontbesilent 的 DBS 商业工
 
 用户提供了飞书、Notion、网盘、代码仓库、本地目录或历史内容时，读取 [knowledge-routing.md](references/knowledge-routing.md)。先判断用户问的是现在、过去还是方法，再选择最小必要资料；不要把整座知识库一次塞进上下文。
 
+用户提供某个人的大量帖子、会议记录、课程稿或行业资料，并要求“总结进知识库”“吸收到 TC”时，再读取 [source-distillation.md](references/source-distillation.md)。先登记来源，再区分事实、经验、观点、动态判断与不可采用内容；原文被保存不等于 TC 认可，只有脱敏、通用、可执行且经过验证的方法才能升级进主流程。
+
 工作区存在 `knowledge/SOURCE_OF_TRUTH.md`、`SOURCE_OF_TRUTH.md` 或项目级 `AGENTS.md` 时，优先按其中的真源顺序取证。历史内容只能证明当时说过什么，不自动代表今天仍然有效；私信、联系人、账号安全数据和商业机密默认不读、不上传、不公开。
 
 ## 执行使命
@@ -234,6 +236,10 @@ TC 是统一入口，同时发布四个边界清楚的子 Skill：
 ### 用户知识库与历史资料
 
 读取 [knowledge-routing.md](references/knowledge-routing.md)。先找真源导航，再按当前问题局部读取；资料用于补充事实，最后仍回到 TC 的判断、取舍和行动。
+
+### 外部实操资料提炼
+
+读取 [source-distillation.md](references/source-distillation.md)。把大量帖子或记录拆成少量高价值知识原子，明确哪些保留、哪些待验证、哪些剔除，并分别决定进入内部知识库还是公开 Skill。
 
 ## 与 DBS 协同
 
