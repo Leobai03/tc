@@ -247,6 +247,25 @@ def validate() -> list[str]:
             if forbidden in partner_text:
                 errors.append(f"技术合伙人公开提炼包含不应公开的内容：{forbidden}")
 
+    external_source = ROOT / "知识库" / "外部理论库" / "dbs-books.md"
+    if not external_source.is_file():
+        errors.append("缺少 DBS 外部理论库来源卡")
+    else:
+        external_text = external_source.read_text(encoding="utf-8")
+        for phrase in (
+            "https://github.com/dontbesilent2025/dbskill",
+            "CC BY-NC 4.0",
+            "不随 TC 安装包分发",
+        ):
+            if phrase not in external_text:
+                errors.append(f"DBS 外部理论库来源卡缺少：{phrase}")
+    bundled_corpora = list((ROOT / "skills").glob("**/dontbesilent-开源推文集.*"))
+    if bundled_corpora:
+        errors.append(
+            "DBS CC BY-NC 全文不得进入 TC 安装包："
+            + ", ".join(str(path.relative_to(ROOT)) for path in bundled_corpora)
+        )
+
     posts_path = ROOT / "知识库" / "公开内容索引" / "posts.jsonl"
     posts_readme_path = ROOT / "知识库" / "公开内容索引" / "README.md"
     post_ids: set[str] = set()
@@ -310,6 +329,8 @@ def validate() -> list[str]:
             errors.append("来源登记存在重复 ID")
         if "tiance-x-archive" not in source_ids:
             errors.append("来源登记缺少 tiance-x-archive")
+        if "dbs-books" not in source_ids:
+            errors.append("来源登记缺少 dbs-books")
         source_text = source_registry_path.read_text(encoding="utf-8")
         if "/Users/" in source_text or "feishu.cn/wiki/" in source_text:
             errors.append("公开来源登记包含本地绝对路径或私有飞书地址")

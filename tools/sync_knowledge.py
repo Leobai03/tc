@@ -14,6 +14,7 @@ CANONICAL_POSTS = ROOT / "知识库" / "公开内容索引" / "posts.jsonl"
 CANONICAL_DICTIONARY = ROOT / "知识库" / "高频概念词典.md"
 CANONICAL_PACKS = ROOT / "知识库" / "Skill知识包"
 CANONICAL_CORE_SOURCES = ROOT / "知识库" / "核心参考源"
+CANONICAL_EXTERNAL_SOURCES = ROOT / "知识库" / "外部理论库"
 
 COPY_MAP = {
     CANONICAL_ATOMS: ROOT / "skills" / "tc-knowledge" / "references" / "atoms.jsonl",
@@ -61,6 +62,24 @@ def expected_pairs() -> list[tuple[Path, Path]]:
                 / "tc-knowledge"
                 / "references"
                 / "knowledge-packs"
+                / source.name,
+            )
+        )
+    for source in sorted(CANONICAL_EXTERNAL_SOURCES.glob("*.md")):
+        pairs.append(
+            (
+                source,
+                ROOT / "skills" / "tc" / "references" / "external-sources" / source.name,
+            )
+        )
+        pairs.append(
+            (
+                source,
+                ROOT
+                / "skills"
+                / "tc-knowledge"
+                / "references"
+                / "external-sources"
                 / source.name,
             )
         )

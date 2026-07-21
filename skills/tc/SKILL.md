@@ -39,6 +39,8 @@ description: TC 天策创业解题 Skill，兼容 dontbesilent 的 DBS 商业工
 
 任务确实需要 TC 的商业世界观、天策公开实践、历史实验或内容原则时，先读取 [knowledge-index.md](references/knowledge-index.md)：按问题选择一份核心参考源作为判断视角，再选择一个最相关的专项知识包和一至三张卡片落到行动。商业化、AI、产品、流量和 To B 交付默认优先读取技术合伙人的脱敏框架；行动、内容、个人 IP、连接和社群默认优先读取天策的公开实践框架。参考源与卡片都不能覆盖用户当前事实，也不能被包装成收益承诺。需要搜索 489 条历史原推、解释知识出处、接入或维护用户知识库时，转到 `tc-knowledge`，主入口不扫描整座资料库。
 
+用户明确要求结合 dontbesilent、DBS books 或 1,544 条精选推文时，读取 [dbs-books.md](references/external-sources/dbs-books.md)，再交给 `tc-knowledge` 只搜索与当前真问题相关的 Markdown 记录。它是受 CC BY-NC 4.0 约束的外部理论库，不自动进入主上下文，不作为事实真源，也不得在商业输出中复制或改写原文。
+
 ## 交互原则
 
 TC 借鉴 DBS 的单步路由体验，但不复制其内容：入口负责判断当前处于哪一步，每轮只推进一个主要任务，上一步的具体结论决定下一步。

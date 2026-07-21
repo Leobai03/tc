@@ -40,6 +40,17 @@
       "role": "architecture-reference",
       "authority": "third-party-method",
       "usage": "参考知识分层、按需装配和维护纪律；不复制 DBS 正文"
+    },
+    {
+      "id": "dbs-books",
+      "name": "dontbesilent 开源推文集",
+      "locator": "https://github.com/dontbesilent2025/dbskill/tree/main/books",
+      "visibility": "public-third-party",
+      "redistribution": "not-bundled-fetch-from-upstream",
+      "license": "CC BY-NC 4.0",
+      "role": "optional-external-theory-library",
+      "authority": "external-view-not-fact-source",
+      "usage": "仅同步 Markdown 到用户本机，用于署名的非商业检索；返回日期和原链接；商业输出不得复制或改写原文"
     }
   ]
 }
