@@ -21,6 +21,7 @@ class TCKnowledgeTests(unittest.TestCase):
         stats = tc_knowledge.stats()
         self.assertEqual(stats["posts"], 489)
         self.assertEqual(stats["atoms"], 22)
+        self.assertEqual(stats["sources"], 2)
         self.assertEqual(stats["packs"], 6)
         self.assertEqual(stats["post_date_range"], ["2025-11-27", "2026-07-14"])
 
@@ -29,7 +30,15 @@ class TCKnowledgeTests(unittest.TestCase):
         self.assertTrue(rows)
         self.assertTrue(any(row["kind"] == "atom" for row in rows))
         self.assertTrue(any(row["kind"] == "pack" for row in rows))
-        self.assertEqual(rows[0]["kind"], "pack")
+        self.assertTrue(any(row["kind"] == "source" for row in rows))
+        self.assertEqual(rows[0]["kind"], "source")
+
+    def test_partner_worldview_is_a_searchable_core_source(self) -> None:
+        rows = tc_knowledge.search("AI Agent To B 商业化 企业交付", "sources", 5)
+        self.assertTrue(rows)
+        partner_rows = [row for row in rows if "技术合伙人" in row["name"]]
+        self.assertTrue(partner_rows)
+        self.assertEqual(partner_rows[0]["kind"], "source")
 
     def test_historical_posts_stay_historical(self) -> None:
         rows = tc_knowledge.search("天策局", "posts", 3)

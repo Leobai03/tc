@@ -16,6 +16,7 @@ REFERENCES = SKILL_ROOT / "references"
 ATOMS = REFERENCES / "atoms.jsonl"
 POSTS = REFERENCES / "public-posts.jsonl"
 PACKS = REFERENCES / "knowledge-packs"
+CORE_SOURCES = REFERENCES / "core-sources"
 ATOM_REQUIRED = {
     "id",
     "knowledge",
@@ -71,6 +72,20 @@ def score_text(query: str, text: str) -> int:
 
 def search(query: str, scope: str, limit: int) -> list[dict]:
     results: list[dict] = []
+    if scope in {"all", "sources"}:
+        for path in sorted(CORE_SOURCES.glob("*.md")):
+            content = path.read_text(encoding="utf-8")
+            score = score_text(query, f"{path.stem} {content}")
+            if score:
+                results.append(
+                    {
+                        "kind": "source",
+                        "score": score,
+                        "name": path.stem,
+                        "path": f"core-sources/{path.name}",
+                        "preview": re.sub(r"\s+", " ", content)[:320],
+                    }
+                )
     if scope in {"all", "atoms"}:
         for atom in load_jsonl(ATOMS):
             text = " ".join(
@@ -122,9 +137,11 @@ def search(query: str, scope: str, limit: int) -> list[dict]:
     # can explicitly use --scope posts.
     groups = {
         kind: [row for row in results if row["kind"] == kind]
-        for kind in ("pack", "atom", "post")
+        for kind in ("source", "pack", "atom", "post")
     }
     chosen: list[dict] = []
+    if groups["source"] and len(chosen) < limit:
+        chosen.append(groups["source"].pop(0))
     if groups["pack"] and len(chosen) < limit:
         chosen.append(groups["pack"].pop(0))
     while groups["atom"] and len(chosen) < min(limit, 4):
@@ -145,7 +162,7 @@ def search(query: str, scope: str, limit: int) -> list[dict]:
         )
         chosen.append(groups["post"].pop(source_index))
     leftovers = sorted(
-        groups["pack"] + groups["atom"] + groups["post"], key=relevance
+        groups["source"] + groups["pack"] + groups["atom"] + groups["post"], key=relevance
     )
     chosen.extend(leftovers[: limit - len(chosen)])
     return chosen
@@ -183,7 +200,7 @@ def markdown_results(query: str, rows: list[dict]) -> str:
                     "",
                 ]
             )
-        else:
+        elif row["kind"] == "pack":
             lines.extend(
                 [
                     f"### [知识包] {row['name']}",
@@ -191,6 +208,18 @@ def markdown_results(query: str, rows: list[dict]) -> str:
                     row["preview"] + "……",
                     "",
                     f"- 文件：{row['path']}",
+                    "",
+                ]
+            )
+        else:
+            lines.extend(
+                [
+                    f"### [核心参考源] {row['name']}",
+                    "",
+                    row["preview"] + "……",
+                    "",
+                    f"- 文件：{row['path']}",
+                    "- 边界：这是判断问题的核心视角，不是当前事实或普遍真理",
                     "",
                 ]
             )
@@ -233,6 +262,9 @@ def validate() -> list[str]:
     packs = list(PACKS.glob("*.md"))
     if not packs:
         errors.append("没有安装任何 TC 专项知识包")
+    sources = list(CORE_SOURCES.glob("*.md"))
+    if len(sources) < 2:
+        errors.append("TC 核心参考源不足两份")
     return errors
 
 
@@ -244,6 +276,7 @@ def stats() -> dict:
         "atoms": len(atoms),
         "posts": len(posts),
         "packs": len(list(PACKS.glob("*.md"))),
+        "sources": len(list(CORE_SOURCES.glob("*.md"))),
         "post_date_range": [min(row["date"] for row in posts), max(row["date"] for row in posts)]
         if posts
         else [],
@@ -257,7 +290,11 @@ def main() -> None:
     subparsers = parser.add_subparsers(dest="command", required=True)
     search_parser = subparsers.add_parser("search")
     search_parser.add_argument("--query", required=True)
-    search_parser.add_argument("--scope", choices=["all", "atoms", "posts", "packs"], default="all")
+    search_parser.add_argument(
+        "--scope",
+        choices=["all", "sources", "atoms", "posts", "packs"],
+        default="all",
+    )
     search_parser.add_argument("--limit", type=int, default=5)
     search_parser.add_argument("--format", choices=["markdown", "json"], default="markdown")
     subparsers.add_parser("stats")
@@ -286,7 +323,8 @@ def main() -> None:
         summary = stats()
         print(
             f"TC 知识库校验通过：{summary['posts']} 条公开原推，"
-            f"{summary['atoms']} 条知识原子，{summary['packs']} 个知识包"
+            f"{summary['atoms']} 条知识原子，{summary['sources']} 个核心参考源，"
+            f"{summary['packs']} 个知识包"
         )
 
 

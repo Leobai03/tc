@@ -27,9 +27,9 @@
       "locator": "private connector configured by owner",
       "visibility": "private-third-party",
       "redistribution": "link-and-summary-internal-only",
-      "role": "external-experience",
-      "authority": "candidate-only",
-      "usage": "只提炼通用方法；不复制原文、身份、客户和动态经营数据"
+      "role": "core-worldview-reference",
+      "authority": "reasoning-lens-not-fact-source",
+      "usage": "商业化、需求、产品、流量、AI 与 To B 交付的主要参考框架；只公开脱敏重写的方法，不复制原文、私有链接、身份、客户和动态经营数据"
     },
     {
       "id": "dbs-architecture",

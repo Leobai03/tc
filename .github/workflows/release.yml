@@ -39,4 +39,4 @@ jobs:
             --title "$GITHUB_REF_NAME" \
             --notes-file "$NOTES" \
             "dist/tc-suite-${VERSION}.zip" \
-            dist/skills/*.zip
+            "dist/skills/tc.zip"
