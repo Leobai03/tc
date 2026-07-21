@@ -225,6 +225,28 @@ def validate() -> list[str]:
             if atom_id not in packed_text:
                 errors.append(f"专项知识包没有引用知识原子：{atom_id}")
 
+    core_source_dir = ROOT / "知识库" / "核心参考源"
+    core_sources = sorted(
+        path for path in core_source_dir.glob("*.md") if path.name != "README.md"
+    )
+    if len(core_sources) != 2:
+        errors.append(f"核心参考源应为 2 份，当前为 {len(core_sources)} 份")
+    partner_source = core_source_dir / "技术合伙人_商业世界观与AI实操.md"
+    tiance_source = core_source_dir / "天策_公开实践与创业价值观.md"
+    for source in (partner_source, tiance_source):
+        if not source.is_file():
+            errors.append(f"缺少核心参考源：{source.relative_to(ROOT)}")
+            continue
+        source_text = source.read_text(encoding="utf-8")
+        for phrase in ("来源卡", "权威边界", "使用规则"):
+            if phrase not in source_text:
+                errors.append(f"{source.relative_to(ROOT)} 缺少 {phrase}")
+    if partner_source.is_file():
+        partner_text = partner_source.read_text(encoding="utf-8")
+        for forbidden in ("feishu.cn/wiki/", "/Users/"):
+            if forbidden in partner_text:
+                errors.append(f"技术合伙人公开提炼包含不应公开的内容：{forbidden}")
+
     posts_path = ROOT / "知识库" / "公开内容索引" / "posts.jsonl"
     posts_readme_path = ROOT / "知识库" / "公开内容索引" / "README.md"
     post_ids: set[str] = set()
@@ -289,7 +311,7 @@ def validate() -> list[str]:
         if "tiance-x-archive" not in source_ids:
             errors.append("来源登记缺少 tiance-x-archive")
         source_text = source_registry_path.read_text(encoding="utf-8")
-        if "/Users/" in source_text or "xcnkl208r114" in source_text:
+        if "/Users/" in source_text or "feishu.cn/wiki/" in source_text:
             errors.append("公开来源登记包含本地绝对路径或私有飞书地址")
 
     errors.extend(knowledge_sync_differences())

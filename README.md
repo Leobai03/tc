@@ -1,13 +1,15 @@
 # TC｜天策创业解题系统
 
-[![Version](https://img.shields.io/badge/version-1.5.0-45C2FF.svg?style=flat-square)](VERSION)
+[![Version](https://img.shields.io/badge/version-1.6.0-45C2FF.svg?style=flat-square)](VERSION)
 [![License](https://img.shields.io/badge/license-Apache--2.0-16A34A.svg?style=flat-square)](LICENSE)
 
 > 你可以把一件讲不清、想不明白、推不动的创业问题直接丢给 TC。它先帮你找出真正卡住的地方，再给一个现在能做的方案。
 
 **支持 Codex、Claude Code，以及其他支持 Agent Skills 的 AI 工具。普通聊天 AI 也能使用轻量版。**
 
-[30 秒开始](#30-秒开始) · [看完整例子](#一次完整对话长什么样) · [安装](#安装) · [新手说明书](docs/新手入门.md) · [工作原理](docs/工作原理.md) · [真实使用示例](docs/真实示例.md) · [版本记录](https://github.com/Leobai03/tc/releases)
+[30 秒开始](#30-秒开始) · [看项目文件夹](https://github.com/Leobai03/tc/tree/main) · [安装](#安装) · [看知识库](知识库/README.md) · [新手说明书](docs/新手入门.md) · [工作原理](docs/工作原理.md) · [版本记录](https://github.com/Leobai03/tc/releases)
+
+> **如果你刚才看到的是一排 ZIP：** 你打开的是 Release 下载页，不是项目目录。想像 DBS 一样看 `skills/`、`docs/`、`知识库/` 等文件夹，请进入 [TC 代码首页](https://github.com/Leobai03/tc/tree/main)。普通用户也不用逐个下载 ZIP，直接复制下面的一条安装命令即可。
 
 ## TC 到底是什么
 
@@ -162,11 +164,11 @@ claude plugin install tc@tc-skills
 
 ### 手动下载
 
-打开 [GitHub Releases](https://github.com/Leobai03/tc/releases)，下载：
+只有不能使用安装命令时，才打开 [GitHub Releases](https://github.com/Leobai03/tc/releases)。普通用户只下载：
 
-- `tc.zip`：只安装最主要的 `/tc`；
-- `tc-suite-x.y.z.zip`：完整套件，包含全部 7 个 Skill 和使用说明；
-- 其他单独 ZIP：只在你明确需要某个子 Skill 时下载。
+- `tc-suite-x.y.z.zip`：完整套件，包含全部 7 个 Skill 和使用说明。
+
+只想安装主入口的高级用户可以下载 `tc.zip`。不要逐个下载一排子 Skill 压缩包；仓库仍会在构建时生成它们用于测试，但正式 Release 只展示完整套件和主入口。
 
 ### 豆包、DeepSeek、Kimi 与普通聊天 AI
 
@@ -199,14 +201,18 @@ tc/
 │   │   ├── SKILL.md           # 主流程，相当于 TC 的总说明书
 │   │   ├── agents/            # 在 Codex 等工具里显示的名称与简介
 │   │   ├── assets/            # 普通聊天 AI 可复制的轻量版
-│   │   └── references/        # 按问题读取的方法、路由与 6 个专项知识包
+│   │   └── references/        # 按问题读取的核心参考源、方法与 6 个专项知识包
 │   ├── tc-diagnosis/          # 问题重构与定义
 │   ├── tc-copy/               # 商业文案
 │   ├── tc-action/             # 真实市场行动
 │   ├── tc-state/              # 本地保存、恢复和汇总创业进度
-│   ├── tc-knowledge/          # 搜索 489 条原推、22 条原子和 6 个知识包
+│   ├── tc-knowledge/          # 搜索 2 个核心参考源、489 条原推、22 条原子和 6 个知识包
 │   └── tc-update/             # 官方更新
-├── 知识库/                    # 知识从哪里来、怎样验证、怎样新增案例
+├── 知识库/                    # 核心参考源，以及知识从哪里来、怎样验证
+│   ├── 核心参考源/            # 技术合伙人与天策的两套核心判断框架
+│   ├── Skill知识包/           # 按具体问题装配的 6 本薄教材
+│   ├── 原子库/                # 22 条带出处与边界的知识卡片
+│   └── 公开内容索引/          # 489 条历史公开原创内容
 ├── docs/                      # 给人看的新手教程、原理、示例和版本说明
 ├── tests/                     # 防止 TC 越改越虚的行为验收场景
 ├── tools/                     # 校验、构建和发版脚本
@@ -234,14 +240,15 @@ TC 使用分层、按需读取的参考资料，不会每次全部塞给 AI：
 - 合作边界、失败复盘、公开与合规；
 - 外部资料提炼、用户知识库接入、反馈闭环；
 - 489 条截至 2026-07-14 的天策公开原创内容索引；
+- 2 份核心参考源：技术合伙人的商业与 AI 实操框架、天策的公开实践与创业价值观；
 - 22 条带日期、链接、证据等级和适用边界的知识原子；
 - 6 个覆盖诊断、行动、内容、产品、组织合作和 AI 落地的知识包；
 - 1 份统一营收、回款、毛利、验证等口径的高频概念词典；
 - DBS 协同、跨平台安装与轻量版分发。
 
-入口：[知识库导航](知识库/README.md) · [搜索 Skill](skills/tc-knowledge/SKILL.md) · [TC 参考资料目录](skills/tc/references) · [来源与验证规则](知识库/来源与验证.md)
+入口：[知识库导航](知识库/README.md) · [核心参考源](知识库/核心参考源) · [搜索 Skill](skills/tc-knowledge/SKILL.md) · [TC 参考资料目录](skills/tc/references) · [来源与验证规则](知识库/来源与验证.md)
 
-原推索引只负责“过去公开说过什么”，不代表 TC 认可每一句，也不能覆盖今天的业务状态。只有经过筛选的原子和知识包才进入方法层。
+原推索引只负责“过去公开说过什么”，不代表 TC 认可每一句，也不能覆盖今天的业务状态。核心参考源决定优先怎样看问题，经过筛选的原子和知识包负责把判断落到方法；它们都必须服从用户当前事实和真实市场证据。
 
 TC 不把观点伪装成事实。动态平台规则、法律、投资、医疗、价格与业务数据必须在使用时重新核对。
 

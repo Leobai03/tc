@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "TC 天策创业解题系统：先重构和定义问题，再给出明确方案",
-    "version": "1.5.0"
+    "version": "1.6.0"
   },
   "plugins": [
     {
@@ -13,7 +13,7 @@
       "description": "TC 渐进式主入口。先重构和定义问题，确认后再给出判断、取舍与行动。",
       "source": "./",
       "strict": false,
-      "version": "1.5.0",
+      "version": "1.6.0",
       "category": "business-workflow",
       "keywords": [
         "startup",
@@ -30,7 +30,7 @@
       "description": "把混乱叙述重构成有目标、约束和验证标准的真问题。",
       "source": "./",
       "strict": false,
-      "version": "1.5.0",
+      "version": "1.6.0",
       "category": "business-diagnostics",
       "keywords": [
         "diagnosis",
@@ -47,7 +47,7 @@
       "description": "判断当前是否该写文案，并生成能推动下一业务环节的表达。",
       "source": "./",
       "strict": false,
-      "version": "1.5.0",
+      "version": "1.6.0",
       "category": "content-creation",
       "keywords": [
         "copywriting",
@@ -64,7 +64,7 @@
       "description": "把判断变成十分钟、二十四小时和七天内可验证的真实市场动作。",
       "source": "./",
       "strict": false,
-      "version": "1.5.0",
+      "version": "1.6.0",
       "category": "business-execution",
       "keywords": [
         "execution",
@@ -81,7 +81,7 @@
       "description": "在本机保存、恢复并汇总已经确认的创业判断、下一步与市场证据。",
       "source": "./",
       "strict": false,
-      "version": "1.5.0",
+      "version": "1.6.0",
       "category": "workflow-infrastructure",
       "keywords": [
         "state",
@@ -95,10 +95,10 @@
     },
     {
       "name": "tc-knowledge",
-      "description": "搜索 TC 公开原推、知识原子和专项知识包，并接入或检查用户自己的知识库。",
+      "description": "搜索 TC 核心参考源、公开原推、知识原子和专项知识包，并接入或检查用户自己的知识库。",
       "source": "./",
       "strict": false,
-      "version": "1.5.0",
+      "version": "1.6.0",
       "category": "workflow-infrastructure",
       "keywords": [
         "knowledge",
@@ -115,7 +115,7 @@
       "description": "只更新官方 TC Skill，不修改其他 Skill 或用户资料。",
       "source": "./",
       "strict": false,
-      "version": "1.5.0",
+      "version": "1.6.0",
       "category": "workflow-infrastructure",
       "keywords": [
         "update",

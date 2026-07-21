@@ -57,8 +57,8 @@ def build(output: Path) -> None:
         "第一次使用：\n"
         "新开一个对话，输入 /tc，然后把真实情况直接说出来。\n\n"
         "手动安装：\n"
-        "skills/tc.zip 是主入口；其他 ZIP 是专项能力。\n"
-        "不知道选哪个时，只使用 tc.zip。\n\n"
+        "Release 页面只需要下载完整套件 tc-suite；只要主入口时才选 tc.zip。\n"
+        "压缩包是安装文件，项目文件夹请到 GitHub 仓库的 Code 页面查看。\n\n"
         "完整说明：README.md 和 docs/ 文件夹。\n"
     )
     with zipfile.ZipFile(bundle, "w", zipfile.ZIP_DEFLATED) as archive:
