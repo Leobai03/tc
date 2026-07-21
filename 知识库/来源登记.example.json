@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "tiance-x-archive",
+      "name": "@Leobai825 公开 X 归档",
+      "locator": "user-configured local X archive",
+      "visibility": "public",
+      "redistribution": "owner-public-content",
+      "role": "historical-evidence",
+      "authority": "historical-only",
+      "usage": "检索过去公开说过什么；不能自动代表今天状态"
+    },
+    {
+      "id": "tiance-current-kb",
+      "name": "天策当前知识库",
+      "locator": "private connector configured by owner",
+      "visibility": "private",
+      "redistribution": "forbidden",
+      "role": "current-state",
+      "authority": "current-when-dated",
+      "usage": "读取当前业务、实验和人工判断；公开前必须脱敏"
+    },
+    {
+      "id": "partner-practice-library",
+      "name": "技术合伙人实操资料",
+      "locator": "private connector configured by owner",
+      "visibility": "private-third-party",
+      "redistribution": "link-and-summary-internal-only",
+      "role": "external-experience",
+      "authority": "candidate-only",
+      "usage": "只提炼通用方法；不复制原文、身份、客户和动态经营数据"
+    },
+    {
+      "id": "dbs-architecture",
+      "name": "dontbesilent2025/dbskill",
+      "locator": "https://github.com/dontbesilent2025/dbskill",
+      "visibility": "public-third-party",
+      "redistribution": "link-only-unless-license-allows",
+      "role": "architecture-reference",
+      "authority": "third-party-method",
+      "usage": "参考知识分层、按需装配和维护纪律；不复制 DBS 正文"
+    }
+  ]
+}

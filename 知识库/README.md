@@ -1,60 +1,92 @@
-# TC 知识库导航
+# TC 知识库
 
-这不是一堆为了显得专业而堆起来的资料。它只保存 TC 在执行创业任务时需要按需读取、能够解释来源和边界的知识。
+TC 知识库不是一堆文章，而是一条可以检查的流水线：
 
-## 当前知识包
+```text
+公开原推 / 私有飞书 / 外部资料
+          ↓ 标记来源、日期和权限
+       知识原子
+          ↓ 验证、脱敏、补边界
+       专项知识包
+          ↓ 按当前问题只读一份
+          /tc
+```
 
-| 主题 | 权威文件 | 什么时候读取 |
-| --- | --- | --- |
-| 问对问题与解题 | [`skills/tc/references/question-to-solution.md`](../skills/tc/references/question-to-solution.md) | 每次复杂任务先读取，判断表面问题与真实需要 |
-| 创业闭环 | [`skills/tc/references/market-loop.md`](../skills/tc/references/market-loop.md) | 验证需求、报价、成交、交付 |
-| 长期原则 | [`skills/tc/references/principles.md`](../skills/tc/references/principles.md) | 方向取舍、现金流、合作原则 |
-| 内容到收入 | [`skills/tc/references/content-to-revenue.md`](../skills/tc/references/content-to-revenue.md) | 内容、获客、报价、信任 |
-| X 增长 | [`skills/tc/references/x-growth.md`](../skills/tc/references/x-growth.md) | X 定位、内容结构、复盘指标 |
-| 收入记分 | [`skills/tc/references/revenue-scoreboard.md`](../skills/tc/references/revenue-scoreboard.md) | 区分流水、营收、回款和毛利 |
-| 案例复盘 | [`skills/tc/references/case-library.md`](../skills/tc/references/case-library.md) | 失败信号、复盘与下一次验证 |
-| 新手引导 | [`skills/tc/references/onboarding.md`](../skills/tc/references/onboarding.md) | 第一次使用 TC |
-| 七天内测 | [`skills/tc/references/pilot-validation.md`](../skills/tc/references/pilot-validation.md) | 验证 Skill 是否真的推动行动 |
-| 跨平台分发 | [`skills/tc/references/distribution.md`](../skills/tc/references/distribution.md) | 安装、分享和轻量版使用 |
-| 用户反馈 | [`skills/tc/references/feedback.md`](../skills/tc/references/feedback.md) | 用户主动报告问题或建议 |
-| 公开边界 | [`skills/tc/references/public-boundaries.md`](../skills/tc/references/public-boundaries.md) | 公开内容、商业宣传与隐私风险 |
-| DBS 协同 | [`skills/tc/references/dbs-integration.md`](../skills/tc/references/dbs-integration.md) | 环境中已安装 DBS 时 |
-| 草根创业方法 | [`skills/tc/references/grassroots-integration.md`](../skills/tc/references/grassroots-integration.md) | 调研、对标、试错、团队边界 |
-| 外部知识源路由 | [`skills/tc/references/knowledge-routing.md`](../skills/tc/references/knowledge-routing.md) | 用户提供飞书、本地目录、历史内容或真源导航时 |
-| 外部实操资料提炼 | [`skills/tc/references/source-distillation.md`](../skills/tc/references/source-distillation.md) | 把某个人的大量帖子或记录变成可验证知识原子时 |
-| 天策公开知识包 | [`skills/tc/references/public-knowledge-atoms.md`](../skills/tc/references/public-knowledge-atoms.md) | 当前任务需要作者历史公开方法或案例时 |
+## 小学生版
 
-## 外部知识源
+- `公开内容索引/`：原书，记录过去公开说过什么；
+- `原子库/`：从原书切出来、背面写着出处和注意事项的小卡片；
+- `Skill知识包/`：把同一问题的卡片装成一本薄教材；
+- `SOURCE_OF_TRUTH.md`：图书馆地图，告诉 AI 去哪一层找；
+- `高频概念词典.md`：统一“营收、回款、毛利、验证”等词的意思。
 
-TC 内置知识回答“怎么判断”，外部知识库回答“这个用户真实发生了什么”。接入方式见 [`外部知识源接入.md`](外部知识源接入.md)。
+## 当前真实规模
 
-公开仓库只保存方法和接口，不复制用户私有资料。天策当前使用飞书 V4 管理最新状态、本地 X 导出保存历史公开证据、TC GitHub 发布通用方法。
+| 层 | 数量 | 作用 |
+| --- | ---: | --- |
+| 公开原创内容索引 | 489 条 | 回溯 `@Leobai825` 2025-11-27 至 2026-07-14 的历史公开表达 |
+| 公开知识原子 | 22 条 | 保存一条可追溯、带证据和边界的候选方法 |
+| 专项知识包 | 6 个 | 覆盖诊断、行动、内容、产品、组织合作和 AI 落地 |
+| 高频概念词典 | 1 份 | 防止商业口径在对话中漂移 |
 
-## 第一批真实知识原子
+“489 条原推”不等于“489 条正确方法”。只有经过筛选的 22 条原子可以作为候选知识，只有边界稳定的内容才进入专项包。
 
-[`原子库/atoms.jsonl`](原子库/atoms.jsonl) 当前保存 12 条可追溯的公开知识卡片，来源均为 `@Leobai825` 的历史公开推文。它们带日期、原链接、可信度和使用边界；数字与业务状态不能脱离原日期引用。
+## 导航
 
-这批原子不是为了证明 TC “资料很多”，而是让下面三件事第一次可以被检查：
+### 真源与规则
 
-1. 一条原则到底来自哪里；
-2. 原文里哪些部分可以采用、哪些只能当待验证观点；
-3. 用户带回新证据后，旧判断是否需要降级或删除。
+- [`SOURCE_OF_TRUTH.md`](SOURCE_OF_TRUTH.md)：回答不同问题时相信谁；
+- [`来源与验证.md`](来源与验证.md)：证据等级、动态事实和进入知识库的最低条件；
+- [`来源登记.example.json`](来源登记.example.json)：公开、私有和第三方来源怎样登记；
+- [`外部知识源接入.md`](外部知识源接入.md)：把自己的飞书、本地目录或其他资料接进 TC；
+- [`知识原子录入模板.md`](知识原子录入模板.md)：新卡片格式；
+- [`案例录入模板.md`](案例录入模板.md)：脱敏案例格式。
 
-字段和录入规则见 [`原子库/README.md`](原子库/README.md)。
+### 内容层
 
-## 维护规则
+- [`公开内容索引/`](公开内容索引)：489 条公开原创推文；
+- [`原子库/`](原子库)：22 条公开知识原子；
+- [`Skill知识包/`](Skill知识包)：6 个专项知识包；
+- [`高频概念词典.md`](高频概念词典.md)：高频商业词统一口径。
 
-1. `skills/tc/SKILL.md` 只保存核心流程和读取路由。
-2. 详细方法只保留在一份参考文件中，避免相同结论多处漂移。
-3. 新资料只有反复影响真实任务，才升级为知识包。
-4. 案例进入公开仓库前必须脱敏，并说明事实、假设、动作和结果。
-5. 粉丝、营收、价格、平台政策、合作状态等动态信息不作为永久事实写入知识库。
-6. 无法核验的观点要标记为假设、经验或待验证，不包装成定律。
-7. 外部知识源按需读取；先读真源导航，再读能改变当前判断的最小片段。
-8. 大量外部帖子先进入知识原子层；原文被收录不代表 TC 认可，必须经过证据、边界、合规和可执行性筛选。
+### Skill 入口
 
-## 下一阶段
+- [`skills/tc/references/knowledge-index.md`](../skills/tc/references/knowledge-index.md)：主 `/tc` 怎样选择一个知识包；
+- [`skills/tc-knowledge/SKILL.md`](../skills/tc-knowledge/SKILL.md)：搜索、接入、收录和检查知识库；
+- [`skills/tc/references/source-distillation.md`](../skills/tc/references/source-distillation.md)：大量帖子怎样从原始资料变成候选知识。
 
-继续从真实公开案例和脱敏试用反馈中增加原子，但不设虚假的数量目标。每次新增都必须有来源、日期、适用场景、证据等级和是否仍有效；未经核验的内容不得升级为核心原则。
+## 三层权限
 
-录入新原子时使用 [知识原子录入模板](知识原子录入模板.md)。
+1. **公开层**：本人公开推文、通用方法、模板和脱敏授权案例，可以进入 GitHub。
+2. **内部层**：飞书当前状态、实验、人工判断和合伙人资料，只在授权任务中读取。
+3. **禁止公开层**：私信、客户、供应商、分成、账号安全数据和未经授权第三方原文。
+
+技术合伙人的长文已经在飞书内部完成首批 10 条方法提炼；公开 TC 只吸收“先验证再开发、Agent 是岗位、企业项目先划边界”等通用原则，没有复制原文和经营细节。
+
+## 更新流程
+
+```bash
+# 1. 从本人 X 归档重新生成公开原创索引
+python3 tools/import_x_archive.py --archive /path/to/archive \
+  --output 知识库/公开内容索引/posts.jsonl --handle Leobai825
+
+# 2. 人工新增或修正知识原子、知识包
+
+# 3. 同步到可以单独安装的 Skill 包
+python3 tools/sync_knowledge.py
+
+# 4. 校验、测试和构建
+python3 tools/check.py
+python3 -m unittest discover -s tests -p 'test_*.py'
+python3 tools/build.py
+```
+
+## 维护纪律
+
+1. 历史原文只证明当时公开表达，不覆盖用户当前事实。
+2. 新来源先登记日期、权限和用途；收录不等于认可。
+3. 一次优先提炼 5 至 10 条高价值原子，不追求虚假数量。
+4. 原子必须能说明适用场景、最小动作、有效证据和停止条件。
+5. 平台、价格、模型、政策、合作和业务状态使用前重新核对。
+6. 公开前完成脱敏、来源、日期、证据和授权检查。
+7. 安装包内的知识副本由脚本生成，不直接手改。

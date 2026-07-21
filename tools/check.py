@@ -8,6 +8,8 @@ import re
 import sys
 from pathlib import Path
 
+from sync_knowledge import differences as knowledge_sync_differences
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
@@ -25,8 +27,13 @@ ATOM_REQUIRED = {
     "topics",
     "skills",
     "type",
+    "object_type",
+    "level",
+    "evidence_grade",
     "confidence",
     "status",
+    "visibility",
+    "source_id",
     "boundary",
 }
 
@@ -173,6 +180,16 @@ def validate() -> list[str]:
                 errors.append(f"知识原子 {atom_id} 的日期格式不正确")
             if atom["status"] != "historical-public":
                 errors.append(f"知识原子 {atom_id} 必须标记为 historical-public")
+            if atom["visibility"] != "public":
+                errors.append(f"知识原子 {atom_id} 必须标记为 public")
+            if atom["source_id"] != "tiance-x-archive":
+                errors.append(f"知识原子 {atom_id} 的 source_id 不在当前公开范围")
+            if atom["object_type"] not in {"QST", "CON", "OPI", "CAS", "SOL"}:
+                errors.append(f"知识原子 {atom_id} 的 object_type 无效")
+            if atom["level"] not in {"L0", "L1", "L2", "L3"}:
+                errors.append(f"知识原子 {atom_id} 的 level 无效")
+            if atom["evidence_grade"] not in {"A", "B", "C", "D"}:
+                errors.append(f"知识原子 {atom_id} 的 evidence_grade 无效")
             for field in ("knowledge", "original", "boundary"):
                 if not isinstance(atom[field], str) or not atom[field].strip():
                     errors.append(f"知识原子 {atom_id} 的 {field} 不能为空")
@@ -198,14 +215,84 @@ def validate() -> list[str]:
         stated_count = re.search(r"当前共有 \*\*(\d+) 条\*\*原子", atom_readme)
         if stated_count is None or int(stated_count.group(1)) != atom_count:
             errors.append("知识原子库 README 的数量与 atoms.jsonl 不一致")
-    public_pack_path = ROOT / "skills" / "tc" / "references" / "public-knowledge-atoms.md"
-    if not public_pack_path.is_file():
-        errors.append("缺少可随 TC 安装的公开知识包")
+    pack_dir = ROOT / "知识库" / "Skill知识包"
+    packs = sorted(pack_dir.glob("*.md"))
+    if not packs:
+        errors.append("缺少 TC 专项知识包")
     else:
-        public_pack = public_pack_path.read_text(encoding="utf-8")
+        packed_text = "\n".join(path.read_text(encoding="utf-8") for path in packs)
         for atom_id in atom_ids:
-            if atom_id not in public_pack:
-                errors.append(f"公开知识包没有引用知识原子：{atom_id}")
+            if atom_id not in packed_text:
+                errors.append(f"专项知识包没有引用知识原子：{atom_id}")
+
+    posts_path = ROOT / "知识库" / "公开内容索引" / "posts.jsonl"
+    posts_readme_path = ROOT / "知识库" / "公开内容索引" / "README.md"
+    post_ids: set[str] = set()
+    post_count = 0
+    if not posts_path.is_file():
+        errors.append("缺少公开原创内容索引")
+    else:
+        for line_number, raw_line in enumerate(
+            posts_path.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            if not raw_line.strip():
+                continue
+            post_count += 1
+            try:
+                post = json.loads(raw_line)
+            except json.JSONDecodeError as error:
+                errors.append(f"公开内容第 {line_number} 行不是合法 JSON：{error}")
+                continue
+            missing = {
+                "id",
+                "date",
+                "text",
+                "likes",
+                "reposts",
+                "engagement",
+                "url",
+                "status",
+            } - set(post)
+            if missing:
+                errors.append(f"公开内容第 {line_number} 行缺少字段：{sorted(missing)}")
+                continue
+            post_id = str(post["id"])
+            if post_id in post_ids:
+                errors.append(f"公开内容 ID 重复：{post_id}")
+            post_ids.add(post_id)
+            if post["url"] != f"https://x.com/Leobai825/status/{post_id}":
+                errors.append(f"公开内容 {post_id} 的 URL 不正确")
+            if post["status"] != "historical-public":
+                errors.append(f"公开内容 {post_id} 必须标记为 historical-public")
+            if not ATOM_DATE.fullmatch(str(post["date"])):
+                errors.append(f"公开内容 {post_id} 的日期格式不正确")
+            if not isinstance(post["text"], str) or not post["text"].strip():
+                errors.append(f"公开内容 {post_id} 正文为空")
+    if post_count == 0:
+        errors.append("公开原创内容索引不能为空")
+    if not posts_readme_path.is_file():
+        errors.append("缺少公开原创内容索引说明")
+    else:
+        posts_readme = posts_readme_path.read_text(encoding="utf-8")
+        stated_posts = re.search(r"当前共有 \*\*(\d+) 条\*\*", posts_readme)
+        if stated_posts is None or int(stated_posts.group(1)) != post_count:
+            errors.append("公开内容索引 README 的数量与 posts.jsonl 不一致")
+
+    source_registry_path = ROOT / "知识库" / "来源登记.example.json"
+    if not source_registry_path.is_file():
+        errors.append("缺少公开来源登记示例")
+    else:
+        source_registry = load_json(source_registry_path)
+        source_ids = [source.get("id") for source in source_registry.get("sources", [])]
+        if len(source_ids) != len(set(source_ids)):
+            errors.append("来源登记存在重复 ID")
+        if "tiance-x-archive" not in source_ids:
+            errors.append("来源登记缺少 tiance-x-archive")
+        source_text = source_registry_path.read_text(encoding="utf-8")
+        if "/Users/" in source_text or "xcnkl208r114" in source_text:
+            errors.append("公开来源登记包含本地绝对路径或私有飞书地址")
+
+    errors.extend(knowledge_sync_differences())
 
     markdown_files = [
         *ROOT.glob("*.md"),
