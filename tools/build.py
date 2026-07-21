@@ -10,12 +10,21 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+IGNORED_PARTS = {"__pycache__", ".DS_Store"}
+IGNORED_SUFFIXES = {".pyc", ".pyo"}
+
+
+def should_include(path: Path) -> bool:
+    return not (
+        any(part in IGNORED_PARTS for part in path.parts)
+        or path.suffix in IGNORED_SUFFIXES
+    )
 
 
 def zip_skill(skill_dir: Path, target: Path) -> None:
     with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as archive:
         for path in sorted(skill_dir.rglob("*")):
-            if path.is_file():
+            if path.is_file() and should_include(path):
                 archive.write(path, Path(skill_dir.name) / path.relative_to(skill_dir))
 
 

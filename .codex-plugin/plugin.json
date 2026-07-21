@@ -1,6 +1,6 @@
 {
   "name": "tc",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "先重构用户的混乱叙述，定义真正问题，再给出明确方案与可验证的第一步。",
   "author": {
     "name": "天策",
@@ -32,7 +32,8 @@
     "defaultPrompt": [
       "/tc 我现在不知道创业下一步该做什么",
       "/tc-diagnosis 帮我重构并定义当前真正的问题",
-      "/tc-action 把这个想法变成七天验证动作"
+      "/tc-action 把这个想法变成七天验证动作",
+      "/tc-state 保存当前创业判断和下一步"
     ],
     "brandColor": "#45C2FF"
   }

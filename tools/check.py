@@ -15,6 +15,20 @@ FRONTMATTER = re.compile(r"\A---\n(?P<body>.*?)\n---\n", re.DOTALL)
 NAME = re.compile(r"^name:\s*([^\n]+)$", re.MULTILINE)
 DESCRIPTION = re.compile(r"^description:\s*(?:\|\s*\n(?:[ \t]+.*\n?)+|[^\n]+)$", re.MULTILINE)
 MARKDOWN_LINK = re.compile(r"\[[^\]]+\]\(([^)]+)\)")
+ATOM_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+ATOM_REQUIRED = {
+    "id",
+    "knowledge",
+    "original",
+    "url",
+    "date",
+    "topics",
+    "skills",
+    "type",
+    "confidence",
+    "status",
+    "boundary",
+}
 
 
 def load_json(path: Path) -> dict:
@@ -86,6 +100,7 @@ def validate() -> list[str]:
         ROOT / "docs" / "新手入门.md",
         ROOT / "docs" / "工作原理.md",
         ROOT / "docs" / "真实示例.md",
+        ROOT / "docs" / "DBS架构深度调研.md",
         ROOT / "docs" / "releases" / f"v{version}.md",
     )
     for document in required_docs:
@@ -118,6 +133,79 @@ def validate() -> list[str]:
             errors.append(f"{label} 缺少渐进式问题定义输出")
     if "已进入 TC。" in tc_skill or "已进入 TC。" in tc_lite:
         errors.append("TC 仍包含旧版长入口文案")
+
+    atoms_path = ROOT / "知识库" / "原子库" / "atoms.jsonl"
+    atom_readme_path = ROOT / "知识库" / "原子库" / "README.md"
+    atom_ids: set[str] = set()
+    atom_count = 0
+    if not atoms_path.is_file():
+        errors.append("缺少公开知识原子库：知识库/原子库/atoms.jsonl")
+    else:
+        for line_number, raw_line in enumerate(
+            atoms_path.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            if not raw_line.strip():
+                continue
+            atom_count += 1
+            try:
+                atom = json.loads(raw_line)
+            except json.JSONDecodeError as error:
+                errors.append(f"知识原子第 {line_number} 行不是合法 JSON：{error}")
+                continue
+            missing = ATOM_REQUIRED - set(atom)
+            if missing:
+                errors.append(f"知识原子第 {line_number} 行缺少字段：{sorted(missing)}")
+                continue
+            atom_id = atom["id"]
+            atom_url = atom["url"]
+            if not isinstance(atom_id, str) or not atom_id.strip():
+                errors.append(f"知识原子第 {line_number} 行的 id 必须是非空字符串")
+                continue
+            if not isinstance(atom_url, str):
+                errors.append(f"知识原子 {atom_id} 的 url 必须是字符串")
+                continue
+            if atom_id in atom_ids:
+                errors.append(f"知识原子 ID 重复：{atom_id}")
+            atom_ids.add(atom_id)
+            if not atom_url.startswith("https://x.com/Leobai825/status/"):
+                errors.append(f"知识原子 {atom_id} 的公开来源 URL 不符合当前范围")
+            if not ATOM_DATE.fullmatch(str(atom["date"])):
+                errors.append(f"知识原子 {atom_id} 的日期格式不正确")
+            if atom["status"] != "historical-public":
+                errors.append(f"知识原子 {atom_id} 必须标记为 historical-public")
+            for field in ("knowledge", "original", "boundary"):
+                if not isinstance(atom[field], str) or not atom[field].strip():
+                    errors.append(f"知识原子 {atom_id} 的 {field} 不能为空")
+            for field in ("topics", "skills"):
+                if (
+                    not isinstance(atom[field], list)
+                    or not atom[field]
+                    or any(not isinstance(item, str) for item in atom[field])
+                ):
+                    errors.append(f"知识原子 {atom_id} 的 {field} 必须是非空字符串数组")
+            if isinstance(atom["skills"], list) and all(
+                isinstance(item, str) for item in atom["skills"]
+            ):
+                unknown_skills = set(atom["skills"]) - set(skill_names)
+                if unknown_skills:
+                    errors.append(f"知识原子 {atom_id} 引用了未知 Skill：{sorted(unknown_skills)}")
+    if atom_count == 0:
+        errors.append("公开知识原子库不能为空")
+    if not atom_readme_path.is_file():
+        errors.append("缺少知识原子库说明：知识库/原子库/README.md")
+    else:
+        atom_readme = atom_readme_path.read_text(encoding="utf-8")
+        stated_count = re.search(r"当前共有 \*\*(\d+) 条\*\*原子", atom_readme)
+        if stated_count is None or int(stated_count.group(1)) != atom_count:
+            errors.append("知识原子库 README 的数量与 atoms.jsonl 不一致")
+    public_pack_path = ROOT / "skills" / "tc" / "references" / "public-knowledge-atoms.md"
+    if not public_pack_path.is_file():
+        errors.append("缺少可随 TC 安装的公开知识包")
+    else:
+        public_pack = public_pack_path.read_text(encoding="utf-8")
+        for atom_id in atom_ids:
+            if atom_id not in public_pack:
+                errors.append(f"公开知识包没有引用知识原子：{atom_id}")
 
     markdown_files = [
         *ROOT.glob("*.md"),
