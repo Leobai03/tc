@@ -36,14 +36,30 @@ def build(output: Path) -> None:
 
     bundle = output / f"tc-suite-{version}.zip"
     instructions = (
-        f"TC v{version}\n\n"
-        "优先使用：npx -y skills add Leobai03/tc -g --all\n"
-        "需要手动上传时，按需使用 skills/ 中的单个 ZIP。\n"
-        "不知道用哪个，只安装 tc.zip 并输入 /tc。\n"
+        f"TC｜天策创业解题系统 v{version}\n\n"
+        "它是干什么的：\n"
+        "把一件讲不清、想不明白或推不动的创业问题直接交给 /tc。\n"
+        "TC 会先帮你找到真正的问题，再给一个明确方案和可验证的第一步。\n\n"
+        "推荐安装：\n"
+        "npx -y skills add Leobai03/tc -g --all\n\n"
+        "第一次使用：\n"
+        "新开一个对话，输入 /tc，然后把真实情况直接说出来。\n\n"
+        "手动安装：\n"
+        "skills/tc.zip 是主入口；其他 ZIP 是专项能力。\n"
+        "不知道选哪个时，只使用 tc.zip。\n\n"
+        "完整说明：README.md 和 docs/ 文件夹。\n"
     )
     with zipfile.ZipFile(bundle, "w", zipfile.ZIP_DEFLATED) as archive:
         archive.writestr("README.txt", instructions)
         archive.writestr("VERSION", f"{version}\n")
+        for relative in (
+            Path("README.md"),
+            Path("LICENSE"),
+            Path("docs/新手入门.md"),
+            Path("docs/工作原理.md"),
+            Path("docs/真实示例.md"),
+        ):
+            archive.write(ROOT / relative, relative)
         for path in built:
             archive.write(path, Path("skills") / path.name)
     print(f"built {bundle.relative_to(ROOT) if bundle.is_relative_to(ROOT) else bundle}")

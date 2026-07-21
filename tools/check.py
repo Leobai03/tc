@@ -82,6 +82,27 @@ def validate() -> list[str]:
     if badge is None or badge.group(1) != version:
         errors.append("README 版本徽章与 VERSION 不一致")
 
+    required_docs = (
+        ROOT / "docs" / "新手入门.md",
+        ROOT / "docs" / "工作原理.md",
+        ROOT / "docs" / "真实示例.md",
+        ROOT / "docs" / "releases" / f"v{version}.md",
+    )
+    for document in required_docs:
+        if not document.is_file():
+            errors.append(f"缺少必要说明文档：{document.relative_to(ROOT)}")
+
+    required_readme_phrases = (
+        "TC 到底是什么",
+        "一次完整对话长什么样",
+        "仓库里的文件夹都是干什么的",
+        "新手入门说明书",
+        "真实使用示例",
+    )
+    for phrase in required_readme_phrases:
+        if phrase not in readme:
+            errors.append(f"README 缺少必要说明：{phrase}")
+
     tc_skill = (ROOT / "skills" / "tc" / "SKILL.md").read_text(encoding="utf-8")
     tc_lite = (ROOT / "skills" / "tc" / "assets" / "tc-lite.txt").read_text(
         encoding="utf-8"

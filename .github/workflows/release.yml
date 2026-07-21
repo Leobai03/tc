@@ -33,8 +33,10 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="$(tr -d '[:space:]' < VERSION)"
+          NOTES="docs/releases/v${VERSION}.md"
+          test -f "$NOTES"
           gh release create "$GITHUB_REF_NAME" \
             --title "$GITHUB_REF_NAME" \
-            --generate-notes \
+            --notes-file "$NOTES" \
             "dist/tc-suite-${VERSION}.zip" \
             dist/skills/*.zip
