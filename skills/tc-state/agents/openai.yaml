@@ -1,0 +1,7 @@
+interface:
+  display_name: "TC State｜创业状态"
+  short_description: "保存、恢复并汇总创业判断和验证结果"
+  default_prompt: "Use $tc-state to save the current startup decision and its next validation step."
+
+policy:
+  allow_implicit_invocation: true

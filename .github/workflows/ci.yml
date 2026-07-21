@@ -26,6 +26,9 @@ jobs:
       - name: Validate TC repository
         run: python3 tools/check.py
 
+      - name: Test TC runtime scripts
+        run: python3 -m unittest discover -s tests -p 'test_*.py'
+
       - name: Validate Claude plugin marketplace
         run: |
           npm install --global @anthropic-ai/claude-code@2.1.158
