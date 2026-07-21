@@ -1,0 +1,5 @@
+interface:
+  display_name: "TC Knowledge｜天策知识库"
+  short_description: "搜索、接入和治理 TC 知识库"
+  default_prompt: "使用 $tc-knowledge 查找相关知识、说明来源与时效，并区分原文、知识原子和稳定方法。"
+

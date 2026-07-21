@@ -1,6 +1,6 @@
 # TC｜天策创业解题系统
 
-[![Version](https://img.shields.io/badge/version-1.4.0-45C2FF.svg?style=flat-square)](VERSION)
+[![Version](https://img.shields.io/badge/version-1.5.0-45C2FF.svg?style=flat-square)](VERSION)
 [![License](https://img.shields.io/badge/license-Apache--2.0-16A34A.svg?style=flat-square)](LICENSE)
 
 > 你可以把一件讲不清、想不明白、推不动的创业问题直接丢给 TC。它先帮你找出真正卡住的地方，再给一个现在能做的方案。
@@ -165,7 +165,7 @@ claude plugin install tc@tc-skills
 打开 [GitHub Releases](https://github.com/Leobai03/tc/releases)，下载：
 
 - `tc.zip`：只安装最主要的 `/tc`；
-- `tc-suite-x.y.z.zip`：完整套件，包含全部 6 个 Skill 和使用说明；
+- `tc-suite-x.y.z.zip`：完整套件，包含全部 7 个 Skill 和使用说明；
 - 其他单独 ZIP：只在你明确需要某个子 Skill 时下载。
 
 ### 豆包、DeepSeek、Kimi 与普通聊天 AI
@@ -174,7 +174,7 @@ claude plugin install tc@tc-skills
 
 完整步骤见 [新手入门说明书](docs/新手入门.md)。
 
-## 6 个 Skill 分别干什么
+## 7 个 Skill 分别干什么
 
 普通用户只需要记住 `/tc`。其余入口是给明确知道自己需要什么的人使用的。
 
@@ -185,24 +185,26 @@ claude plugin install tc@tc-skills
 | `/tc-copy` | 生成推动当前业务环节的文案 | 要写推文、报价、私聊、招募或跟进消息 |
 | `/tc-action` | 把判断变成真实市场动作 | 已经想明白，却迟迟没有行动 |
 | `/tc-state` | 把当前判断、下一步和结果存到本机，或恢复上次进度 | 想跨对话继续同一个创业问题 |
+| `/tc-knowledge` | 搜索 TC 公开知识，接入并检查自己的知识库 | 查历史原文、方法出处、飞书或本地资料 |
 | `/tc-update` | 从官方仓库更新 TC | 想检查并安装最新版 |
 
-当前只发布 6 个边界清楚的 Skill。不会为了看起来厉害，制造一堆没有独立用途的空插件。
+当前只发布 7 个边界清楚的 Skill。`tc-knowledge` 有独立的搜索脚本和资料治理任务，不是为了凑数量创建的空插件。
 
 ## 仓库里的文件夹都是干什么的
 
 ```text
 tc/
-├── skills/                    # TC 真正执行任务的 6 个 Skill
+├── skills/                    # TC 真正执行任务的 7 个 Skill
 │   ├── tc/                    # 主入口：判断当前最该处理什么
 │   │   ├── SKILL.md           # 主流程，相当于 TC 的总说明书
 │   │   ├── agents/            # 在 Codex 等工具里显示的名称与简介
 │   │   ├── assets/            # 普通聊天 AI 可复制的轻量版
-│   │   └── references/        # 17 份按问题读取的方法、边界与公开知识包
+│   │   └── references/        # 按问题读取的方法、路由与 6 个专项知识包
 │   ├── tc-diagnosis/          # 问题重构与定义
 │   ├── tc-copy/               # 商业文案
 │   ├── tc-action/             # 真实市场行动
 │   ├── tc-state/              # 本地保存、恢复和汇总创业进度
+│   ├── tc-knowledge/          # 搜索 489 条原推、22 条原子和 6 个知识包
 │   └── tc-update/             # 官方更新
 ├── 知识库/                    # 知识从哪里来、怎样验证、怎样新增案例
 ├── docs/                      # 给人看的新手教程、原理、示例和版本说明
@@ -224,17 +226,22 @@ tc/
 
 ## 知识库里有什么
 
-TC 主入口内置 17 份按需读取的参考资料，不会每次全部塞给 AI：
+TC 使用分层、按需读取的参考资料，不会每次全部塞给 AI：
 
 - 问题重构、创业链条、生存边界；
 - 内容到收入、X 起号、报价与成交；
 - 市场验证、行动推进、收入记分；
 - 合作边界、失败复盘、公开与合规；
 - 外部资料提炼、用户知识库接入、反馈闭环；
-- 12 条带日期和公开链接的天策历史知识原子；
+- 489 条截至 2026-07-14 的天策公开原创内容索引；
+- 22 条带日期、链接、证据等级和适用边界的知识原子；
+- 6 个覆盖诊断、行动、内容、产品、组织合作和 AI 落地的知识包；
+- 1 份统一营收、回款、毛利、验证等口径的高频概念词典；
 - DBS 协同、跨平台安装与轻量版分发。
 
-入口：[知识库导航](知识库/README.md) · [TC 参考资料目录](skills/tc/references) · [来源与验证规则](知识库/来源与验证.md)
+入口：[知识库导航](知识库/README.md) · [搜索 Skill](skills/tc-knowledge/SKILL.md) · [TC 参考资料目录](skills/tc/references) · [来源与验证规则](知识库/来源与验证.md)
+
+原推索引只负责“过去公开说过什么”，不代表 TC 认可每一句，也不能覆盖今天的业务状态。只有经过筛选的原子和知识包才进入方法层。
 
 TC 不把观点伪装成事实。动态平台规则、法律、投资、医疗、价格与业务数据必须在使用时重新核对。
 

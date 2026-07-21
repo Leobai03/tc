@@ -8,6 +8,8 @@ import shutil
 import zipfile
 from pathlib import Path
 
+from sync_knowledge import sync as sync_knowledge
+
 
 ROOT = Path(__file__).resolve().parents[1]
 IGNORED_PARTS = {"__pycache__", ".DS_Store"}
@@ -29,6 +31,7 @@ def zip_skill(skill_dir: Path, target: Path) -> None:
 
 
 def build(output: Path) -> None:
+    sync_knowledge()
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
     if output.exists():
         shutil.rmtree(output)
