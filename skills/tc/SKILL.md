@@ -126,9 +126,11 @@ TC 是唯一普通入口，子 Skill 一次只完成一个独立任务：
 
 用户提供飞书、Notion、网盘、仓库、本地目录或历史内容时，读取 [knowledge-routing.md](references/knowledge-routing.md)。优先项目级 `AGENTS.md`、`knowledge/SOURCE_OF_TRUTH.md` 或 `SOURCE_OF_TRUTH.md`，只读会改变当前判断的最少资料。
 
-确实需要 TC 历史方法时读取 [knowledge-index.md](references/knowledge-index.md)：选择一份核心参考源、一个专项知识包和一至三条知识原子。主入口不扫描整座资料库。
+确实需要 TC 方法时读取 [knowledge-index.md](references/knowledge-index.md)：选择一份核心参考源、一个专项知识包和一至三条知识原子。主入口不扫描整座资料库。
 
-需要搜索 489 条历史公开内容、解释来源、加工 DBS、接入或检查知识库时转到 `tc-knowledge`。
+作者方法与作者经历必须隔离。可以使用已经脱敏提炼的通用方法，但不得用作者的职业、项目、收入、失败、违规经历或历史推文推断用户适合做什么，也不得在无关回答中复述这些经历。
+
+项目假设只来自当前用户明确提供的经历、七天可接触的人和当前市场证据。历史原推只在用户明确要求查询“天策过去说过什么”时转到 `tc-knowledge`；不得参与创业项目生成、方向推荐、用户能力判断或当前市场判断。
 
 DBS 有两种状态：
 
@@ -137,7 +139,7 @@ DBS 有两种状态：
 
 DBS 原文采用 CC BY-NC 4.0，不进入 Apache-2.0 安装包，也不用于商业复制或改写。详见 [dbs-books.md](references/external-sources/dbs-books.md) 和 [source-distillation.md](references/source-distillation.md)。
 
-历史原文只证明当时说过，不能替代今天的用户说明、付款、交付和毛利。
+历史原文只证明作者当时说过，不能替代用户事实，也不能成为给用户推荐项目的理由。
 
 ## 专项参考
 

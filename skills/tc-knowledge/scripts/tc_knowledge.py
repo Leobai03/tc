@@ -485,7 +485,7 @@ def search(
     if scope == "dbs-books":
         return search_dbs_books(query, limit, source_path, cache_dir)
     results: list[dict] = []
-    if scope in {"all", "sources"}:
+    if scope in {"all", "guidance", "sources"}:
         for path in sorted(CORE_SOURCES.glob("*.md")):
             content = path.read_text(encoding="utf-8")
             score = score_text(query, f"{path.stem} {content}")
@@ -499,7 +499,7 @@ def search(
                         "preview": re.sub(r"\s+", " ", content)[:320],
                     }
                 )
-    if scope in {"all", "atoms"}:
+    if scope in {"all", "guidance", "atoms"}:
         for atom in load_jsonl(ATOMS):
             text = " ".join(
                 [
@@ -513,12 +513,12 @@ def search(
             score = score_text(query, text)
             if score:
                 results.append({"kind": "atom", "score": score, **atom})
-    if scope in {"all", "posts"}:
+    if scope == "posts":
         for post in load_jsonl(POSTS):
             score = score_text(query, post["text"])
             if score:
                 results.append({"kind": "post", "score": score, **post})
-    if scope in {"all", "packs"}:
+    if scope in {"all", "guidance", "packs"}:
         for path in sorted(PACKS.glob("*.md")):
             content = path.read_text(encoding="utf-8")
             score = score_text(query, f"{path.stem} {content}")
@@ -541,16 +541,15 @@ def search(
         )
 
     results.sort(key=relevance)
-    if scope != "all":
+    if scope not in {"all", "guidance"}:
         return results[:limit]
 
-    # Default results are intentionally assembled, not just globally ranked:
-    # one method pack gives context, up to three atoms give traceable rules,
-    # and one raw post gives historical evidence. Users who only want history
-    # can explicitly use --scope posts.
+    # Guidance results intentionally exclude raw historical posts. Author history
+    # is only available through the explicit `posts` scope and never participates
+    # in project generation or user capability judgments.
     groups = {
         kind: [row for row in results if row["kind"] == kind]
-        for kind in ("source", "pack", "atom", "post")
+        for kind in ("source", "pack", "atom")
     }
     chosen: list[dict] = []
     if groups["source"] and len(chosen) < limit:
@@ -559,23 +558,8 @@ def search(
         chosen.append(groups["pack"].pop(0))
     while groups["atom"] and len(chosen) < min(limit, 4):
         chosen.append(groups["atom"].pop(0))
-    if groups["post"] and len(chosen) < limit:
-        selected_source_ids = {
-            row["url"].rstrip("/").rsplit("/", 1)[-1]
-            for row in chosen
-            if row["kind"] == "atom"
-        }
-        source_index = next(
-            (
-                index
-                for index, row in enumerate(groups["post"])
-                if row["id"] in selected_source_ids
-            ),
-            0,
-        )
-        chosen.append(groups["post"].pop(source_index))
     leftovers = sorted(
-        groups["source"] + groups["pack"] + groups["atom"] + groups["post"], key=relevance
+        groups["source"] + groups["pack"] + groups["atom"], key=relevance
     )
     chosen.extend(leftovers[: limit - len(chosen)])
     return chosen
@@ -736,8 +720,8 @@ def main() -> None:
     search_parser.add_argument("--query", required=True)
     search_parser.add_argument(
         "--scope",
-        choices=["all", "sources", "atoms", "posts", "packs", "dbs-books"],
-        default="all",
+        choices=["guidance", "all", "sources", "atoms", "posts", "packs", "dbs-books"],
+        default="guidance",
     )
     search_parser.add_argument("--limit", type=int, default=5)
     search_parser.add_argument("--format", choices=["markdown", "json"], default="markdown")

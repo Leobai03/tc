@@ -34,6 +34,20 @@ class SkillContractTests(unittest.TestCase):
         self.assertIn("项目假设（不是市场结论）", text)
         self.assertIn("zero-to-one.md", text)
 
+    def test_author_history_is_separated_from_user_judgment(self) -> None:
+        main = read("skills/tc/SKILL.md")
+        zero_to_one = read("skills/tc/references/zero-to-one.md")
+        knowledge = read("skills/tc-knowledge/SKILL.md")
+        for phrase in (
+            "作者方法与作者经历必须隔离",
+            "不得参与创业项目生成、方向推荐、用户能力判断或当前市场判断",
+        ):
+            self.assertIn(phrase, main)
+        self.assertIn("不得拿 TC 作者", knowledge)
+        self.assertIn("不得拿 TC 作者、知识库作者或历史案例人物", knowledge)
+        self.assertIn("不得拿 TC 作者、知识库作者、历史案例人物", zero_to_one)
+        self.assertIn("--scope posts", knowledge)
+
     def test_zero_to_one_never_pretends_market_access(self) -> None:
         text = read("skills/tc/references/zero-to-one.md")
         for phrase in (

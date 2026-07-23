@@ -3,6 +3,8 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -28,12 +30,35 @@ class TCKnowledgeTests(unittest.TestCase):
         self.assertEqual(stats["post_date_range"], ["2025-11-27", "2026-07-14"])
 
     def test_product_search_prioritizes_curated_knowledge(self) -> None:
-        rows = tc_knowledge.search("产品化 真实需求", "all", 8)
+        rows = tc_knowledge.search("产品化 真实需求", "guidance", 8)
         self.assertTrue(rows)
         self.assertTrue(any(row["kind"] == "atom" for row in rows))
         self.assertTrue(any(row["kind"] == "pack" for row in rows))
         self.assertTrue(any(row["kind"] == "source" for row in rows))
+        self.assertFalse(any(row["kind"] == "post" for row in rows))
         self.assertEqual(rows[0]["kind"], "source")
+
+    def test_legacy_all_scope_also_excludes_author_history(self) -> None:
+        rows = tc_knowledge.search("亚马逊 ACCA 副业", "all", 50)
+        self.assertFalse(any(row["kind"] == "post" for row in rows))
+
+    def test_cli_default_scope_does_not_return_author_posts(self) -> None:
+        completed = subprocess.run(
+            [
+                sys.executable,
+                str(SCRIPT),
+                "search",
+                "--query",
+                "ACCA 代写",
+                "--format",
+                "json",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        rows = json.loads(completed.stdout)
+        self.assertFalse(any(row["kind"] == "post" for row in rows))
 
     def test_partner_worldview_is_a_searchable_core_source(self) -> None:
         rows = tc_knowledge.search("AI Agent To B 商业化 企业交付", "sources", 5)
@@ -45,6 +70,7 @@ class TCKnowledgeTests(unittest.TestCase):
     def test_historical_posts_stay_historical(self) -> None:
         rows = tc_knowledge.search("天策局", "posts", 3)
         self.assertTrue(rows)
+        self.assertTrue(all(row["kind"] == "post" for row in rows))
         self.assertTrue(all(row["status"] == "historical-public" for row in rows))
 
     def test_dbs_markdown_parser_preserves_source_fields(self) -> None:

@@ -198,9 +198,22 @@ def validate() -> list[str]:
     knowledge_skill = (
         ROOT / "skills" / "tc-knowledge" / "SKILL.md"
     ).read_text(encoding="utf-8")
-    for phrase in ("dbs-candidate", "candidate-add", "独立市场证据"):
+    for phrase in (
+        "dbs-candidate",
+        "candidate-add",
+        "独立市场证据",
+        "--scope guidance",
+        "--scope posts",
+        "不让历史原推参与创业项目生成",
+    ):
         if phrase not in knowledge_skill:
             errors.append(f"tc-knowledge 缺少候选加工流程：{phrase}")
+    for phrase in (
+        "作者方法与作者经历必须隔离",
+        "不得参与创业项目生成、方向推荐、用户能力判断或当前市场判断",
+    ):
+        if phrase not in tc_skill:
+            errors.append(f"TC 主 Skill 缺少作者隔离规则：{phrase}")
 
     atoms_path = ROOT / "知识库" / "原子库" / "atoms.jsonl"
     atom_readme_path = ROOT / "知识库" / "原子库" / "README.md"
