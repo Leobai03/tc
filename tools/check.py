@@ -125,7 +125,26 @@ def validate() -> list[str]:
         if phrase not in readme:
             errors.append(f"README 缺少必要说明：{phrase}")
 
+    positioning_phrases = (
+        "AI 创业解题教练",
+        "讲清问题 → 找到最早断点 → 做一次低成本验证 → 根据结果继续调整",
+        "知识库只是",
+        "创业百科",
+        "暴利项目推荐器",
+    )
+    for phrase in positioning_phrases:
+        if phrase not in readme:
+            errors.append(f"README 缺少产品定位护栏：{phrase}")
+    if "把创业想明白，更要把下一步做出来。" not in readme:
+        errors.append("README 缺少 TC 传播口号")
+
     tc_skill = (ROOT / "skills" / "tc" / "SKILL.md").read_text(encoding="utf-8")
+    zero_to_one_path = ROOT / "skills" / "tc" / "references" / "zero-to-one.md"
+    if not zero_to_one_path.is_file():
+        errors.append("TC 缺少从零创业项目假设规则：skills/tc/references/zero-to-one.md")
+        zero_to_one = ""
+    else:
+        zero_to_one = zero_to_one_path.read_text(encoding="utf-8")
     tc_lite = (ROOT / "skills" / "tc" / "assets" / "tc-lite.txt").read_text(
         encoding="utf-8"
     )
@@ -140,6 +159,48 @@ def validate() -> list[str]:
             errors.append(f"{label} 缺少渐进式问题定义输出")
     if "已进入 TC。" in tc_skill or "已进入 TC。" in tc_lite:
         errors.append("TC 仍包含旧版长入口文案")
+    if len(tc_skill.splitlines()) > 240:
+        errors.append("TC 主 Skill 超过 240 行，应只保留主流程与路由")
+    for phrase in positioning_phrases:
+        if phrase not in tc_skill:
+            errors.append(f"TC 主 Skill 缺少产品定位护栏：{phrase}")
+    for phrase in (
+        "诊断何时必须结束",
+        "项目假设（不是市场结论）",
+        "有联网、浏览器或数据库工具",
+        "没有联网工具",
+    ):
+        if phrase not in tc_skill:
+            errors.append(f"TC 主 Skill 缺少从零创业约束：{phrase}")
+    for phrase in (
+        "最多追问两个",
+        "有联网或检索工具",
+        "没有联网或检索工具",
+        "不得编造市场规模、价格、案例、客户",
+    ):
+        if phrase not in zero_to_one:
+            errors.append(f"从零创业规则缺少：{phrase}")
+
+    diagnosis_skill = (
+        ROOT / "skills" / "tc-diagnosis" / "SKILL.md"
+    ).read_text(encoding="utf-8")
+    for phrase in ("诊断结束条件", "立即停止追问", "最多追问两个"):
+        if phrase not in diagnosis_skill:
+            errors.append(f"tc-diagnosis 缺少硬切换规则：{phrase}")
+
+    state_skill = (ROOT / "skills" / "tc-state" / "SKILL.md").read_text(
+        encoding="utf-8"
+    )
+    for phrase in ("export-evidence", "单独取得当次授权", "不上传"):
+        if phrase not in state_skill:
+            errors.append(f"tc-state 缺少证据反馈边界：{phrase}")
+
+    knowledge_skill = (
+        ROOT / "skills" / "tc-knowledge" / "SKILL.md"
+    ).read_text(encoding="utf-8")
+    for phrase in ("dbs-candidate", "candidate-add", "独立市场证据"):
+        if phrase not in knowledge_skill:
+            errors.append(f"tc-knowledge 缺少候选加工流程：{phrase}")
 
     atoms_path = ROOT / "知识库" / "原子库" / "atoms.jsonl"
     atom_readme_path = ROOT / "知识库" / "原子库" / "README.md"
@@ -256,6 +317,9 @@ def validate() -> list[str]:
             "https://github.com/dontbesilent2025/dbskill",
             "CC BY-NC 4.0",
             "不随 TC 安装包分发",
+            "dbs-candidate",
+            "commercial_eligible=false",
+            "promotion_eligible=false",
         ):
             if phrase not in external_text:
                 errors.append(f"DBS 外部理论库来源卡缺少：{phrase}")

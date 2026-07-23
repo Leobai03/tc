@@ -50,7 +50,9 @@
       "license": "CC BY-NC 4.0",
       "role": "optional-external-theory-library",
       "authority": "external-view-not-fact-source",
-      "usage": "仅同步 Markdown 到用户本机，用于署名的非商业检索；返回日期和原链接；商业输出不得复制或改写原文"
+      "ingestion_mode": "local-research-candidate-only",
+      "commercial_use": false,
+      "usage": "对话态仅同步 Markdown 到用户本机并做署名的非商业检索；维护态每次取3至5条记录生成不含正文的本机L1候选；没有独立证据和人工许可审查时不得进入公开或商业方法"
     }
   ]
 }

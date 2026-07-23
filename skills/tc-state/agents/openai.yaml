@@ -1,7 +1,7 @@
 interface:
   display_name: "TC State｜创业状态"
-  short_description: "保存、恢复并汇总创业判断和验证结果"
-  default_prompt: "Use $tc-state to save the current startup decision and its next validation step."
+  short_description: "保存进度，并按授权导出脱敏证据候选"
+  default_prompt: "使用 $tc-state 保存或恢复创业进度；只有我单独同意时，才导出本机脱敏市场证据候选。"
 
 policy:
   allow_implicit_invocation: true

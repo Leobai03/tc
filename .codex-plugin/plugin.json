@@ -1,7 +1,7 @@
 {
   "name": "tc",
-  "version": "1.7.0",
-  "description": "先重构用户的混乱叙述，定义真正问题，再给出明确方案与可验证的第一步。",
+  "version": "1.8.0",
+  "description": "给普通创业者使用的 AI 创业解题教练：讲清问题，找到最早断点，完成一次低成本市场验证。",
   "author": {
     "name": "天策",
     "email": "1179884054@qq.com",
@@ -20,8 +20,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "TC｜天策创业解题系统",
-    "shortDescription": "先重构和定义问题，再给出方案",
-    "longDescription": "面向创业者和内容创作者的中文渐进式解题工具。先把混乱叙述重构成有对象、目标、约束和验证标准的真问题；用户确认后，再给出明确判断、必要取舍与可验证行动。内置技术合伙人与天策的两套核心参考框架，并按需搜索公开原文、知识原子、专项方法包和受许可约束的 DBS 外部 Markdown 理论库。",
+    "shortDescription": "把创业乱麻变成真问题和可验证动作",
+    "longDescription": "给普通创业者使用的中文 AI 创业解题教练。把混乱叙述变成一个真正的问题，找到赚钱链条最早缺少证据的一环，再给一个低成本、能接受真实市场检验的下一步。知识库只是书架，产品核心是判断能力；不推荐暴利项目，不保证收益，不输出空泛建议。",
     "developerName": "天策",
     "category": "Productivity",
     "capabilities": [
@@ -31,11 +31,12 @@
     "websiteURL": "https://leobai825.icu/tc.html",
     "defaultPrompt": [
       "/tc 我现在不知道创业下一步该做什么",
+      "/tc 我没有资源，也不知道做什么，请先找到真正卡点，再给我一个能立刻验证的动作",
       "/tc-diagnosis 帮我重构并定义当前真正的问题",
       "/tc-action 把这个想法变成七天验证动作",
       "/tc-state 保存当前创业判断和下一步",
       "/tc-knowledge 用核心参考源查一下和产品化有关的 TC 知识",
-      "/tc-knowledge 用 DBS Markdown 查找和流量变现有关的外部观点，并标日期和原链接"
+      "/tc-knowledge 用 DBS Markdown 加工一个带来源、反例和许可边界的本机研究候选"
     ],
     "brandColor": "#45C2FF"
   }

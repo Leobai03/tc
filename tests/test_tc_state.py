@@ -54,6 +54,7 @@ class TcStateTest(unittest.TestCase):
             )
             self.assertTrue(Path(saved["saved"]).is_file())
             self.assertTrue(Path(saved["current"]).is_file())
+            self.assertTrue(Path(saved["structured"]).is_file())
 
             listed = json.loads(self.run_state(state_root, "list").stdout)
             self.assertEqual(listed[0]["project"], "九十天主线")
@@ -93,6 +94,58 @@ class TcStateTest(unittest.TestCase):
             )
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("decision", result.stderr)
+
+    def test_evidence_export_requires_separate_consent_and_redacts_identifiers(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            state_root = base / "state"
+            payload = self.payload()
+            payload["problem_definition"] = (
+                "联系客户 13800138000，并发到 test@example.com。"
+            )
+            payload["evidence"] = [
+                "客户原话在 https://example.com/private",
+                "已收到一笔真实定金",
+            ]
+            source = self.write_payload(base, payload, "evidence.json")
+            self.run_state(state_root, "save", "--payload", str(source))
+            target = base / "candidate.json"
+
+            denied = self.run_state(
+                state_root,
+                "export-evidence",
+                "--project",
+                "九十天主线",
+                "--output",
+                str(target),
+                check=False,
+            )
+            self.assertNotEqual(denied.returncode, 0)
+            self.assertFalse(target.exists())
+
+            exported = json.loads(
+                self.run_state(
+                    state_root,
+                    "export-evidence",
+                    "--project",
+                    "九十天主线",
+                    "--output",
+                    str(target),
+                    "--consent",
+                ).stdout
+            )
+            candidate = json.loads(target.read_text(encoding="utf-8"))
+
+        self.assertFalse(exported["uploaded"])
+        self.assertEqual(candidate["source_type"], "tc-state-opt-in")
+        self.assertFalse(candidate["commercial_eligible"])
+        self.assertNotIn(
+            "九十天主线", json.dumps(candidate, ensure_ascii=False)
+        )
+        self.assertNotIn("13800138000", candidate["problem"])
+        self.assertNotIn("test@example.com", candidate["problem"])
+        self.assertNotIn("https://example.com/private", " ".join(candidate["evidence"]))
+        self.assertEqual(candidate["consent_scope"], "local-candidate-only")
 
 
 if __name__ == "__main__":

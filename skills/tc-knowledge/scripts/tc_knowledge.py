@@ -55,6 +55,17 @@ ATOM_REQUIRED = {
     "source_id",
     "boundary",
 }
+CANDIDATE_REQUIRED_TEXT = {
+    "problem",
+    "hypothesis",
+    "scenario",
+    "action",
+    "success_metric",
+    "counterexample",
+    "boundary",
+    "source_type",
+}
+CANDIDATE_SOURCE_REQUIRED = {"source_id", "license", "commercial_use"}
 
 
 def load_jsonl(path: Path) -> list[dict]:
@@ -67,6 +78,17 @@ def load_jsonl(path: Path) -> list[dict]:
         except json.JSONDecodeError as error:
             raise ValueError(f"{path}:{line_number} 不是合法 JSON：{error}") from error
     return rows
+
+
+def load_json_object(path: str | Path) -> dict:
+    source = Path(path).expanduser()
+    try:
+        payload = json.loads(source.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise ValueError(f"无法读取候选知识 JSON：{source}（{error}）") from error
+    if not isinstance(payload, dict):
+        raise ValueError("候选知识 payload 顶层必须是 JSON 对象")
+    return payload
 
 
 def query_tokens(query: str) -> list[str]:
@@ -93,6 +115,11 @@ def score_text(query: str, text: str) -> int:
 def default_dbs_cache_dir() -> Path:
     root = Path(os.environ.get("TC_HOME", str(Path.home() / ".tc"))).expanduser()
     return root / "external" / "dbs-books"
+
+
+def default_candidate_dir() -> Path:
+    root = Path(os.environ.get("TC_HOME", str(Path.home() / ".tc"))).expanduser()
+    return root / "knowledge-candidates"
 
 
 def resolve_dbs_markdown(
@@ -185,6 +212,194 @@ def search_dbs_books(
     results.sort(key=lambda row: row["date"], reverse=True)
     results.sort(key=lambda row: row["score"], reverse=True)
     return results[:limit]
+
+
+def normalize_candidate(payload: dict) -> dict:
+    missing = CANDIDATE_REQUIRED_TEXT - set(payload)
+    if missing:
+        raise ValueError(f"候选知识缺少字段：{sorted(missing)}")
+    for field in CANDIDATE_REQUIRED_TEXT:
+        if not isinstance(payload[field], str) or not payload[field].strip():
+            raise ValueError(f"候选知识字段 {field} 必须是非空字符串")
+
+    evidence = payload.get("evidence", [])
+    if not isinstance(evidence, list) or any(
+        not isinstance(item, str) for item in evidence
+    ):
+        raise ValueError("候选知识 evidence 必须是字符串数组")
+
+    sources = payload.get("sources", [])
+    if not isinstance(sources, list) or not sources:
+        raise ValueError("候选知识至少需要一个可追溯来源")
+    for source in sources:
+        if not isinstance(source, dict):
+            raise ValueError("候选知识 sources 中的每一项必须是对象")
+        source_missing = CANDIDATE_SOURCE_REQUIRED - set(source)
+        if source_missing:
+            raise ValueError(f"候选来源缺少字段：{sorted(source_missing)}")
+        if not isinstance(source["source_id"], str) or not source["source_id"].strip():
+            raise ValueError("候选来源 source_id 必须是非空字符串")
+        if not isinstance(source["license"], str) or not source["license"].strip():
+            raise ValueError("候选来源 license 必须是非空字符串")
+        if not isinstance(source["commercial_use"], bool):
+            raise ValueError("候选来源 commercial_use 必须是布尔值")
+
+    has_noncommercial_source = any(not source["commercial_use"] for source in sources)
+    commercial_eligible = bool(payload.get("commercial_eligible", False))
+    if has_noncommercial_source and commercial_eligible:
+        raise ValueError("含非商业来源的候选知识不能标记为可商用")
+
+    now = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    fingerprint = hashlib.sha256(
+        json.dumps(payload, ensure_ascii=False, sort_keys=True).encode("utf-8")
+    ).hexdigest()[:10]
+    candidate_id = payload.get("id") or (
+        f"TC-CAND-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{fingerprint}"
+    )
+    if not isinstance(candidate_id, str) or not re.fullmatch(
+        r"[0-9A-Za-z._-]+", candidate_id
+    ):
+        raise ValueError("候选知识 id 只能包含字母、数字、点、下划线和连字符")
+
+    return {
+        "id": candidate_id,
+        "created_at": payload.get("created_at", now),
+        "level": "L1",
+        "status": "candidate-research",
+        "visibility": "local-private",
+        "human_review_required": True,
+        "promotion_eligible": False,
+        "commercial_eligible": commercial_eligible,
+        "source_type": payload["source_type"].strip(),
+        "problem": payload["problem"].strip(),
+        "hypothesis": payload["hypothesis"].strip(),
+        "scenario": payload["scenario"].strip(),
+        "action": payload["action"].strip(),
+        "success_metric": payload["success_metric"].strip(),
+        "counterexample": payload["counterexample"].strip(),
+        "boundary": payload["boundary"].strip(),
+        "evidence": [item.strip() for item in evidence if item.strip()],
+        "sources": sources,
+        "review_note": payload.get(
+            "review_note",
+            "候选内容只能用于设计实验；取得独立市场证据并完成人工许可审查前，"
+            "不得进入公开或商业 TC 方法。",
+        ),
+    }
+
+
+def save_candidate(
+    payload: dict, candidate_dir: str | Path | None = None
+) -> dict:
+    record = normalize_candidate(payload)
+    root = (
+        Path(candidate_dir).expanduser()
+        if candidate_dir
+        else default_candidate_dir()
+    )
+    root.mkdir(parents=True, exist_ok=True)
+    target = root / f"{record['id']}.json"
+    if target.exists():
+        raise ValueError(f"候选知识已经存在：{target}")
+    temporary = target.with_suffix(".json.tmp")
+    temporary.write_text(
+        json.dumps(record, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    temporary.replace(target)
+    return {
+        "saved": str(target),
+        "id": record["id"],
+        "status": record["status"],
+        "promotion_eligible": record["promotion_eligible"],
+        "commercial_eligible": record["commercial_eligible"],
+    }
+
+
+def create_dbs_candidate(
+    query: str,
+    payload_path: str | Path,
+    limit: int,
+    source_path: str | Path | None = None,
+    cache_dir: str | Path | None = None,
+    candidate_dir: str | Path | None = None,
+) -> dict:
+    if limit < 3 or limit > 5:
+        raise ValueError("DBS 候选知识每次必须选择 3 至 5 条相关记录")
+    rows = search_dbs_books(query, limit, source_path, cache_dir)
+    if not rows:
+        raise ValueError(f"DBS 中没有找到与“{query}”相关的记录")
+    payload = load_json_object(payload_path)
+    for field in (
+        "problem",
+        "hypothesis",
+        "scenario",
+        "action",
+        "success_metric",
+        "counterexample",
+        "boundary",
+    ):
+        value = payload.get(field, "")
+        if not isinstance(value, str):
+            continue
+        compact_value = re.sub(r"\s+", "", value)
+        for row in rows:
+            compact_source = re.sub(r"\s+", "", row["text"])
+            if len(compact_value) >= 25 and compact_value in compact_source:
+                raise ValueError(
+                    f"字段 {field} 疑似直接复制 DBS 原文；请只写独立问题假设和验证动作"
+                )
+    payload.update(
+        {
+            "source_type": "dbs-external-research",
+            "commercial_eligible": False,
+            "sources": [
+                {
+                    "source_id": row["source_id"],
+                    "record_id": row["id"],
+                    "date": row["date"],
+                    "url": row["url"],
+                    "theme": row["theme"],
+                    "tags": row["tags"],
+                    "license": row["license"],
+                    "commercial_use": False,
+                }
+                for row in rows
+            ],
+            "review_note": (
+                "这是带 DBS 溯源的非商业研究候选，不含原文正文。"
+                "只有取得独立用户、付款或交付证据，并通过人工许可审查后，"
+                "才能另行提炼为 TC 方法。"
+            ),
+        }
+    )
+    return save_candidate(payload, candidate_dir)
+
+
+def list_candidates(candidate_dir: str | Path | None = None) -> list[dict]:
+    root = (
+        Path(candidate_dir).expanduser()
+        if candidate_dir
+        else default_candidate_dir()
+    )
+    if not root.is_dir():
+        return []
+    rows: list[dict] = []
+    for path in sorted(root.glob("*.json")):
+        try:
+            payload = load_json_object(path)
+        except ValueError:
+            continue
+        rows.append(
+            {
+                "id": payload.get("id", path.stem),
+                "source_type": payload.get("source_type"),
+                "status": payload.get("status"),
+                "created_at": payload.get("created_at"),
+                "commercial_eligible": payload.get("commercial_eligible", False),
+                "path": str(path),
+            }
+        )
+    return rows
 
 
 def fetch_bytes(url: str) -> bytes:
@@ -482,7 +697,14 @@ def validate() -> list[str]:
         errors.append("缺少 DBS 外部理论库来源卡")
     else:
         source_card = DBS_SOURCE_CARD.read_text(encoding="utf-8")
-        for phrase in (DBS_REPOSITORY, "CC BY-NC 4.0", "不随 TC 安装包分发"):
+        for phrase in (
+            DBS_REPOSITORY,
+            "CC BY-NC 4.0",
+            "不随 TC 安装包分发",
+            "dbs-candidate",
+            "commercial_eligible=false",
+            "promotion_eligible=false",
+        ):
             if phrase not in source_card:
                 errors.append(f"DBS 外部理论库来源卡缺少：{phrase}")
     return errors
@@ -540,6 +762,24 @@ def main() -> None:
     status_parser.add_argument("--source", choices=["dbs-books"], required=True)
     status_parser.add_argument("--source-path")
     status_parser.add_argument("--cache-dir")
+    candidate_parser = subparsers.add_parser(
+        "candidate-add",
+        help="把人工整理或 tc-state 导出的证据保存为本机候选知识",
+    )
+    candidate_parser.add_argument("--payload", required=True)
+    candidate_parser.add_argument("--candidate-dir")
+    dbs_candidate_parser = subparsers.add_parser(
+        "dbs-candidate",
+        help="把 3 至 5 条 DBS 外部观点加工成带许可边界的本机研究候选",
+    )
+    dbs_candidate_parser.add_argument("--query", required=True)
+    dbs_candidate_parser.add_argument("--payload", required=True)
+    dbs_candidate_parser.add_argument("--limit", type=int, default=3)
+    dbs_candidate_parser.add_argument("--source-path")
+    dbs_candidate_parser.add_argument("--cache-dir")
+    dbs_candidate_parser.add_argument("--candidate-dir")
+    candidate_list_parser = subparsers.add_parser("candidate-list")
+    candidate_list_parser.add_argument("--candidate-dir")
     args = parser.parse_args()
 
     if args.command == "search":
@@ -581,6 +821,37 @@ def main() -> None:
         except ValueError as error:
             raise SystemExit(str(error)) from error
         json.dump(result, sys.stdout, ensure_ascii=False, indent=2)
+        print()
+    elif args.command == "candidate-add":
+        try:
+            result = save_candidate(
+                load_json_object(args.payload), args.candidate_dir
+            )
+        except ValueError as error:
+            raise SystemExit(str(error)) from error
+        json.dump(result, sys.stdout, ensure_ascii=False, indent=2)
+        print()
+    elif args.command == "dbs-candidate":
+        try:
+            result = create_dbs_candidate(
+                args.query,
+                args.payload,
+                args.limit,
+                source_path=args.source_path,
+                cache_dir=args.cache_dir,
+                candidate_dir=args.candidate_dir,
+            )
+        except (FileNotFoundError, ValueError) as error:
+            raise SystemExit(str(error)) from error
+        json.dump(result, sys.stdout, ensure_ascii=False, indent=2)
+        print()
+    elif args.command == "candidate-list":
+        json.dump(
+            list_candidates(args.candidate_dir),
+            sys.stdout,
+            ensure_ascii=False,
+            indent=2,
+        )
         print()
     else:
         errors = validate()
