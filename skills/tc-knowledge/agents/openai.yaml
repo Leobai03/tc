@@ -1,4 +1,4 @@
 interface:
   display_name: "TC Knowledge｜天策知识库"
-  short_description: "搜索核心参考源、原文、知识原子和稳定方法"
-  default_prompt: "使用 $tc-knowledge 查找相关核心参考源和方法，说明来源、时效与事实边界。"
+  short_description: "默认检索通用方法，并将历史原推隔离在明确的历史查询中"
+  default_prompt: "使用 $tc-knowledge 搜索与问题相关的通用方法；除非我明确查询天策过去说过什么，否则不要读取历史原推。"

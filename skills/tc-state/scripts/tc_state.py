@@ -22,6 +22,17 @@ LIST_FIELDS = (
     "evidence",
 )
 SAFE_SLUG = re.compile(r"[^0-9A-Za-z\u4e00-\u9fff._-]+")
+SENSITIVE_PATTERNS = (
+    (re.compile(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}"), "[已移除邮箱]"),
+    (re.compile(r"(?<!\d)1[3-9]\d{9}(?!\d)"), "[已移除手机号]"),
+    (re.compile(r"https?://\S+"), "[已移除链接]"),
+    (
+        re.compile(
+            r"(?i)\b(?:api[_-]?key|token|password|secret)\b\s*[:=]\s*\S+"
+        ),
+        "[已移除凭据]",
+    ),
+)
 
 
 def now_stamp() -> str:
@@ -74,6 +85,13 @@ def load_payload(path: Path) -> dict[str, Any]:
             raise SystemExit(f"字段 {field} 必须是字符串数组")
         payload[field] = [item.strip() for item in value if item.strip()]
     return payload
+
+
+def redact_text(value: str) -> str:
+    result = value
+    for pattern, replacement in SENSITIVE_PATTERNS:
+        result = pattern.sub(replacement, result)
+    return result.strip()
 
 
 def bullets(items: list[str], empty: str = "- 暂无") -> str:
@@ -145,9 +163,24 @@ def save_command(args: argparse.Namespace) -> None:
     content = render_snapshot(payload, stamp)
     snapshot = unique_path(project_dir / "sessions", f"{stamp}-{title}")
     current = project_dir / "current.md"
+    structured = {**payload, "saved_at": stamp}
+    snapshot_json = snapshot.with_suffix(".json")
+    current_json = project_dir / "current.json"
     atomic_write(snapshot, content)
     atomic_write(current, content)
-    print(json.dumps({"saved": str(snapshot), "current": str(current)}, ensure_ascii=False))
+    serialized = json.dumps(structured, ensure_ascii=False, indent=2) + "\n"
+    atomic_write(snapshot_json, serialized)
+    atomic_write(current_json, serialized)
+    print(
+        json.dumps(
+            {
+                "saved": str(snapshot),
+                "current": str(current),
+                "structured": str(current_json),
+            },
+            ensure_ascii=False,
+        )
+    )
 
 
 def list_command(args: argparse.Namespace) -> None:
@@ -217,6 +250,77 @@ def report_command(args: argparse.Namespace) -> None:
     print(json.dumps({"report": str(target), "snapshots": len(files)}, ensure_ascii=False))
 
 
+def export_evidence_command(args: argparse.Namespace) -> None:
+    if not args.consent:
+        raise SystemExit(
+            "导出市场证据需要用户明确同意。确认只生成本机脱敏候选后，"
+            "重新运行并加上 --consent。"
+        )
+    project_dir = root_path(args.root) / slug(args.project, "project")
+    current_json = project_dir / "current.json"
+    if not current_json.is_file():
+        raise SystemExit(
+            f"没有找到结构化当前状态：{current_json}。请先用新版 tc-state 保存一次。"
+        )
+    try:
+        payload = json.loads(current_json.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise SystemExit(f"当前状态 JSON 无效：{current_json}（{error}）") from error
+
+    evidence = [
+        redact_text(item)
+        for item in payload.get("evidence", [])
+        if isinstance(item, str) and redact_text(item)
+    ]
+    tradeoff = redact_text(str(payload.get("tradeoff", "")))
+    candidate = {
+        "source_type": "tc-state-opt-in",
+        "problem": redact_text(str(payload["problem_definition"])),
+        "hypothesis": redact_text(str(payload["decision"])),
+        "scenario": "用户主动授权导出的本机创业实验状态；项目名、联系人和完整事实清单未导出。",
+        "action": redact_text(str(payload["next_action"])),
+        "success_metric": redact_text(
+            str(payload.get("success_metric", "下一轮补充可核验市场指标"))
+        ),
+        "counterexample": (
+            "有效标准未达到、出现退款或负毛利，或新证据与当前判断冲突时，"
+            "不得升级为稳定方法。"
+        ),
+        "boundary": (
+            (tradeoff + "；" if tradeoff else "")
+            + "仅供本机候选知识人工复核；不得自动上传、公开或用于商业宣传。"
+        ),
+        "evidence": evidence,
+        "commercial_eligible": False,
+        "sources": [
+            {
+                "source_id": "tc-state-local",
+                "date": str(payload.get("saved_at", "")),
+                "url": "",
+                "license": "private-user-data",
+                "commercial_use": False,
+            }
+        ],
+        "consent_scope": "local-candidate-only",
+        "human_review_required": True,
+    }
+    target = Path(args.output).expanduser().resolve()
+    atomic_write(
+        target, json.dumps(candidate, ensure_ascii=False, indent=2) + "\n"
+    )
+    print(
+        json.dumps(
+            {
+                "exported": str(target),
+                "scope": candidate["consent_scope"],
+                "uploaded": False,
+                "human_review_required": True,
+            },
+            ensure_ascii=False,
+        )
+    )
+
+
 def parser() -> argparse.ArgumentParser:
     result = argparse.ArgumentParser(description=__doc__)
     result.add_argument("--root", help="覆盖默认保存根目录（用于测试或自定义）")
@@ -237,6 +341,15 @@ def parser() -> argparse.ArgumentParser:
     report_parser.add_argument("--project", required=True)
     report_parser.add_argument("--force", action="store_true")
     report_parser.set_defaults(func=report_command)
+
+    evidence_parser = commands.add_parser(
+        "export-evidence",
+        help="在用户明确同意后导出本机脱敏市场证据候选",
+    )
+    evidence_parser.add_argument("--project", required=True)
+    evidence_parser.add_argument("--output", required=True)
+    evidence_parser.add_argument("--consent", action="store_true")
+    evidence_parser.set_defaults(func=export_evidence_command)
     return result
 
 

@@ -1,4 +1,4 @@
 interface:
   display_name: "TC｜天策创业解题系统"
-  short_description: "先重构和定义问题，再给一个明确方案"
-  default_prompt: "使用 $tc 先重构和定义我的问题，确认后再给出一个明确方案。"
+  short_description: "把混乱的创业问题变成真问题和一个马上能验证的市场动作"
+  default_prompt: "使用 $tc 把我混乱的创业情况讲清楚，找到最早断点，并只给一个马上能接受市场验证的下一步。"
