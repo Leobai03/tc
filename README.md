@@ -11,8 +11,6 @@
 
 [30 秒开始](#30-秒开始) · [看项目文件夹](https://github.com/Leobai03/tc/tree/main) · [安装](#安装) · [看知识库](知识库/README.md) · [新手说明书](docs/新手入门.md) · [工作原理](docs/工作原理.md) · [版本记录](https://github.com/Leobai03/tc/releases)
 
-> **如果你刚才看到的是一排 ZIP：** 你打开的是 Release 下载页，不是项目目录。想像 DBS 一样看 `skills/`、`docs/`、`知识库/` 等文件夹，请进入 [TC 代码首页](https://github.com/Leobai03/tc/tree/main)。普通用户也不用逐个下载 ZIP，直接复制下面的一条安装命令即可。
-
 ## TC 到底是什么
 
 TC 是给普通创业者使用的 **AI 创业解题教练**。它最重要的能力不是知道多少理论，而是把一团乱麻变成一个真正的问题和一个马上能验证的动作。
